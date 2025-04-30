@@ -41,12 +41,12 @@ export const useQuestionStore = defineStore("question", {
 
     async submitUserAnswer(answerData) {
       try {
-        await submitAnswer(answerData);
-        // Optionally, you can reload or notify the user
+        await submitAnswer(answerData); // axios/fetch POST to /questions/submit-answer
       } catch (err) {
         this.error = err.message || "Failed to submit answer";
       }
     },
+    
 
     async getassessmentid(id) {
       this.loading = true;

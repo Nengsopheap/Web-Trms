@@ -36,6 +36,13 @@
       </div>
     </div>
 
+    <!-- Show Score After Quiz -->
+    <div v-if="score !== null" class="text-center mt-6">
+      <p class="text-xl font-bold text-green-600">
+        You scored {{ score }}% on the quiz!
+      </p>
+    </div>
+
     <!-- Popup Modal -->
     <div
       v-if="showPopup"
@@ -44,7 +51,6 @@
       <div
         class="bg-white p-8 rounded-xl shadow-2xl max-w-xl w-full text-gray-800 relative transition-all"
       >
-        <!-- Close Button -->
         <div class="flex justify-center mt-10">
           <div class="w-full max-w-2xl">
             <div v-if="loading">Loading questions...</div>
@@ -57,23 +63,27 @@
                   Question {{ currentQuestionIndex + 1 }}:
                   {{ filteredQuestions[currentQuestionIndex].question_text }}
                 </p>
-                <ul class="list-disc ml-5">
-                  <div
-                    v-for="(option, optionIndex) in filteredQuestions[
-                      currentQuestionIndex
-                    ].options"
-                    :key="optionIndex"
-                    class="flex items-center mb-2"
-                  >
-                    <input
-                      type="checkbox"
-                      :value="option.option_text"
-                      v-model="selectedOptions[currentQuestionIndex]"
-                      class="mr-2"
-                    />
-                    {{ option.option_text }}
-                  </div>
-                </ul>
+
+                <div
+                  v-for="(option, optionIndex) in filteredQuestions[
+                    currentQuestionIndex
+                  ].options"
+                  :key="optionIndex"
+                  class="flex items-center mb-2"
+                >
+                  <input
+                    :type="
+                      filteredQuestions[currentQuestionIndex].is_multiple_choice
+                        ? 'checkbox'
+                        : 'radio'
+                    "
+                    :name="'question_' + currentQuestionIndex"
+                    :value="option.option_text"
+                    v-model="selectedOptions[currentQuestionIndex]"
+                    class="mr-2"
+                  />
+                  {{ option.option_text }}
+                </div>
               </div>
 
               <!-- Navigation Buttons -->
@@ -94,7 +104,7 @@
                 </button>
                 <button
                   v-else
-                  @click="closePopup"
+                  @click="submitQuiz"
                   class="px-4 py-2 rounded bg-green-600 text-white"
                 >
                   Finish
@@ -103,6 +113,8 @@
             </div>
           </div>
         </div>
+
+        <!-- Close Button -->
         <button
           @click="closePopup"
           class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-2xl focus:outline-none"
@@ -125,13 +137,11 @@ const route = useRoute();
 const assessmentId = parseInt(route.params.assessmentId);
 const questionStore = useQuestionStore();
 
-// State variables
-const quizStarted = ref(false);
+// State
 const showPopup = ref(false);
 const currentQuestionIndex = ref(0);
-
-// Initialize selected options array for each question
 const selectedOptions = ref({});
+const score = ref(null); // Store score percentage
 
 // Load submitted answers on mount
 onMounted(async () => {
@@ -148,21 +158,21 @@ const filteredQuestions = computed(() =>
   )
 );
 
-// Watch for changes in filteredQuestions to initialize selectedOptions
+// Initialize selectedOptions per question
 watch(filteredQuestions, (questions) => {
-  questions.forEach((_, index) => {
-    if (!selectedOptions.value[index]) {
-      selectedOptions.value[index] = [];
+  questions.forEach((q, index) => {
+    if (!(index in selectedOptions.value)) {
+      selectedOptions.value[index] = q.is_multiple_choice ? [] : null;
     }
   });
 });
 
-// Start quiz popup
+// Start and close popup
 const startQuiz = () => {
   showPopup.value = true;
+  score.value = null;
 };
 
-// Close modal popup
 const closePopup = () => {
   showPopup.value = false;
 };
@@ -179,8 +189,58 @@ const previousQuestion = () => {
     currentQuestionIndex.value--;
   }
 };
+
+// Submit Quiz
+const submitQuiz = async () => {
+  try {
+    // Initialize the lastResponse variable to store the latest response
+    let lastResponse = null;
+
+    // Iterate over each selected option to submit answers
+    for (let index in selectedOptions.value) {
+      const question = filteredQuestions.value[index];
+      const selected = selectedOptions.value[index];
+
+      const selectedOptionIds = question.options
+        .filter((opt) =>
+          Array.isArray(selected)
+            ? selected.includes(opt.option_text)
+            : selected === opt.option_text
+        )
+        .map((opt) => opt.id);
+
+      const answerData = {
+        question_id: question.id,
+        option_ids: selectedOptionIds,
+        user_id: 3, // Replace with actual user_id
+      };
+
+      // Submit the answer and capture the response
+      const res = await questionStore.submitUserAnswer(answerData);
+
+      console.log("Backend response:", lastResponse);
+      console.log("Calculated score:", score.value);
+
+      // Store the response for later use
+      lastResponse = res;
+    }
+
+    // After all answers are submitted, update the score
+    if (lastResponse && typeof lastResponse.correctPercentage === "number") {
+      score.value = Math.round(lastResponse.correctPercentage);
+    } else {
+      score.value = 0;
+    }
+
+    closePopup();
+  } catch (error) {
+    console.error("Submission or scoring failed:", error);
+    score.value = 0;
+    closePopup();
+  }
+};
 </script>
 
 <style scoped>
-/* Add any scoped custom styles here if needed */
+/* Add any scoped custom styles here */
 </style>
