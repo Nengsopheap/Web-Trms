@@ -22,12 +22,19 @@
           :key="assessment.id"
           class="bg-white border rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-300"
         >
-          <h3 class="text-2xl font-semibold text-gray-800 dark:text-black mb-2">
-            {{ assessment.name }}
-          </h3>
-          <p class="text-gray-600 dark:text-gray-300 text-sm mb-4">
-            {{ assessment.description || "No description provided." }}
-          </p>
+          <router-link
+            :to="`/question/${assessment.id}`"
+            class="block bg-white border rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-300"
+          >
+            <h3
+              class="text-2xl font-semibold text-gray-800 dark:text-black mb-2"
+            >
+              {{ assessment.name }}
+            </h3>
+            <p class="text-gray-600 dark:text-gray-300 text-sm mb-4">
+              {{ assessment.description || "No description provided." }}
+            </p>
+          </router-link>
         </div>
       </div>
 
@@ -39,18 +46,21 @@
 
 <script lang="ts" setup>
 import { ref, computed, onMounted } from "vue";
-import { useAssessmentStore } from "../stores/assessment";
 import { useRouter } from "vue-router";
+import { useAssessmentStore } from "../stores/assessment";
+import { useQuestionStore } from "../stores/question";
 import Pagination from "../components/Pagination.vue";
 
 const assessmentStore = useAssessmentStore();
+const questionStore = useQuestionStore(); // ✅ different name
 const router = useRouter();
 
 const currentPage = ref(1);
 const itemsPerPage = 3;
 
-onMounted(() => {
+onMounted(async () => {
   assessmentStore.loadAssessments();
+  await questionStore.getassessmentid(); // ✅ fixed call
 });
 
 const totalPages = computed(() =>
