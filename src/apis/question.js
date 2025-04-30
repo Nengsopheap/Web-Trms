@@ -25,8 +25,11 @@ export async function createQuestion(questionData) {
   return response.data;
 }
 
-export const submitAnswer = async (data) => {
-  return await axios.post('http://localhost:3000/questions/submit-answer', data);
-   // ✅ FULL URL
-};
-
+export async function submitAnswer(answerData) {
+  try {
+    const response = await axios.post('//localhost:3000/questions/submit-answer', answerData);
+    return response.data;  // This returns the data from the backend
+  } catch (error) {
+    throw new Error('Error submitting answer: ' + error.message);
+  }
+}

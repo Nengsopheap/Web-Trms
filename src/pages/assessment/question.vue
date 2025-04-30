@@ -37,11 +37,6 @@
     </div>
 
     <!-- Show Score After Quiz -->
-    <div v-if="score !== null" class="text-center mt-6">
-      <p class="text-xl font-bold text-green-600">
-        You scored {{ score }}% on the quiz!
-      </p>
-    </div>
 
     <!-- Popup Modal -->
     <div
@@ -131,6 +126,7 @@ import { ref, onMounted, computed, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useQuestionStore } from "../../stores/question";
 import Header from "../../components/Header.vue";
+import router from "../../router";
 
 // Routing & Store
 const route = useRoute();
@@ -154,7 +150,7 @@ const { loading, error } = questionStore;
 // Filter questions by assessment ID
 const filteredQuestions = computed(() =>
   questionStore.submittedAnswers.filter(
-    (q) => q.assessment && q.assessment.id === assessmentId
+    (q) => q.assessment && q.assessment.id == assessmentId
   )
 );
 
@@ -192,52 +188,53 @@ const previousQuestion = () => {
 
 // Submit Quiz
 const submitQuiz = async () => {
-  try {
-    // Initialize the lastResponse variable to store the latest response
-    let lastResponse = null;
+  let totalPoints = 0; // Sum of earned points
+  let totalQuestions = filteredQuestions.value.length;
 
-    // Iterate over each selected option to submit answers
-    for (let index in selectedOptions.value) {
-      const question = filteredQuestions.value[index];
-      const selected = selectedOptions.value[index];
+  for (let index in selectedOptions.value) {
+    const question = filteredQuestions.value[index];
+    const selected = selectedOptions.value[index];
 
-      const selectedOptionIds = question.options
-        .filter((opt) =>
-          Array.isArray(selected)
-            ? selected.includes(opt.option_text)
-            : selected === opt.option_text
-        )
-        .map((opt) => opt.id);
+    const selectedOptionIds = question.options
+      .filter((opt) =>
+        Array.isArray(selected)
+          ? selected.includes(opt.option_text)
+          : selected === opt.option_text
+      )
+      .map((opt) => opt.id);
 
-      const answerData = {
-        question_id: question.id,
-        option_ids: selectedOptionIds,
-        user_id: 3, // Replace with actual user_id
-      };
+    const answerData = {
+      question_id: question.id,
+      option_ids: selectedOptionIds,
+      user_id: 11, // Replace with dynamic user ID if needed
+    };
 
-      // Submit the answer and capture the response
+    try {
       const res = await questionStore.submitUserAnswer(answerData);
 
-      console.log("Backend response:", lastResponse);
-      console.log("Calculated score:", score.value);
-
-      // Store the response for later use
-      lastResponse = res;
+      if (res && typeof res.points === "number") {
+        totalPoints += res.points;
+        console.log(`Points earned for Q${parseInt(index) + 1}:`, res.points);
+      } else {
+        console.warn("No points returned from backend for one question.");
+      }
+    } catch (error) {
+      console.error("Error during quiz submission:", error);
     }
-
-    // After all answers are submitted, update the score
-    if (lastResponse && typeof lastResponse.correctPercentage === "number") {
-      score.value = Math.round(lastResponse.correctPercentage);
-    } else {
-      score.value = 0;
-    }
-
-    closePopup();
-  } catch (error) {
-    console.error("Submission or scoring failed:", error);
-    score.value = 0;
-    closePopup();
   }
+
+  // ✅ Correct percentage calculation using totalPoints
+  const totalPercentage = (totalPoints / totalQuestions) * 100;
+
+  score.value = totalPercentage.toFixed(2); // Display to user
+
+  // Redirect to result page with score
+  router.push({
+    name: "assessmentresult",
+    query: { score: score.value },
+  });
+
+  closePopup(); // Close the modal
 };
 </script>
 

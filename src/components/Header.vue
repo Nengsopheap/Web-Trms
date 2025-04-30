@@ -10,7 +10,7 @@
         </div>
       </div>
       <div class="flex flex-row​ gap-5 text-white font-bold">
-        <div class="">ទំព័រដើម</div>
+        <router-link to="/" class="cursor-pointer">ទំព័រដើម</router-link>
         <div class="">ច្បាប់និងលិខិតបទដ្ឋានគតិយុត្ត</div>
         <div class="">ធនធាន</div>
         <div class="">អំពី TRM</div>
