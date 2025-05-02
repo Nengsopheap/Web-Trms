@@ -2,17 +2,21 @@ import { createRouter, createWebHistory } from "vue-router";
 import Home from "../pages/Homepage/Home.vue";
 import Question from "../pages/assessment/question.vue";
 import assessmentresult from "../pages/assessment/assessmentresult.vue";
+import Login from "../pages/login/Login.vue";
+import Dashboard from "../pages/admin/dashboard.vue";
 
 const routes = [
-  { path: "/", name: "Home", component: Home },
+  { path: "/Home", name: "Home", component: Home },
+  { path: "/", name: "login", component: Login },
+  { path: "/dashboard", name: "dashboard", component: Dashboard },
   {
-    path: "/question/:assessmentId",  // Use :assessmentId to define the dynamic route
+    path: "/question/:assessmentId",
     name: "question",
     component: Question,
-    props: true,  // Pass the assessmentId as a prop to the component
+    props: true,
   },
   {
-    path: "/quiz-result", // ✅ New route for results
+    path: "/quiz-result",
     name: "assessmentresult",
     component: assessmentresult,
   },
