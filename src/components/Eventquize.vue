@@ -16,16 +16,13 @@
 
     <div v-else>
       <!-- Cards -->
-      <div class="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 p-5">
+      <div class="grid gap-2 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 p-5">
         <div
           v-for="assessment in paginatedAssessments"
           :key="assessment.id"
-          class="bg-white border rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-300"
+          class="bg-white border rounded-xl p-5 shadow-lg hover:shadow-xl transition-all duration-300"
         >
-          <router-link
-            :to="`/question/${assessment.id}`"
-            class="block bg-white border rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-300"
-          >
+          <router-link :to="`/question/${assessment.id}`">
             <h3
               class="text-2xl font-semibold text-gray-800 dark:text-black mb-2"
             >

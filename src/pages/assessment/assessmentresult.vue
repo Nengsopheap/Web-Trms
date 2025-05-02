@@ -3,7 +3,10 @@
   <div class="flex flex-col" style="background-color: #31247d">
     <div class="flex flex-col gap-5 items-start" style="margin-left: 200px">
       <div class="text-3xl mt-3 text-gray-100 font-bold">ពិន្ទុការប្រលង</div>
-      <div class="text-xs text-gray-100 font-bold" style="width: 400px; line-height: 20px;">
+      <div
+        class="text-xs text-gray-100 font-bold"
+        style="width: 400px; line-height: 20px"
+      >
         ប្រព័ន្ធវាយតម្លៃសិស្សនឹងជួយអ្នកក្នុងការរៀនសូត្របានប្រសើរជាងមុនដោយផ្តល់នូវព័ត៌មានដ៏សំខាន់។
       </div>
     </div>
@@ -13,7 +16,7 @@
         style="width: 1110px"
       >
         <div class="">
-          <p class=" font-bold" style="font-size: 25px; width: 300px">
+          <p class="font-bold" style="font-size: 25px; width: 300px">
             🏆 ចំណាត់ថ្នាក់របស់អ្នក នៃការវាយតម្លៃ
             <span v-if="score > 50" class="text-red-600 font-medium">
               You passed! You're not at risk.</span
