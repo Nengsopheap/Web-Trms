@@ -103,6 +103,7 @@
     <!-- Show Score After Quiz -->
 
     <!-- Popup Modal -->
+
     <div
       v-if="showPopup"
       class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50"
@@ -126,13 +127,14 @@
               >
                 {{ filteredQuestions[currentQuestionIndex].question_text }}
               </p>
+
               <div class="ml-1">choice <span class="text-red-500">*</span></div>
+
               <div class="mb-6 p-4 rounded-md">
                 <div
-                  v-for="(option, optionIndex) in filteredQuestions[
-                    currentQuestionIndex
-                  ].options"
-                  :key="optionIndex"
+                  v-for="option in filteredQuestions[currentQuestionIndex]
+                    .options"
+                  :key="option.id"
                   class="flex items-center mb-2 mt-2 border bg-gray-200 rounded-lg p-1"
                 >
                   <input
@@ -142,7 +144,7 @@
                         : 'radio'
                     "
                     :name="'question_' + currentQuestionIndex"
-                    :value="option.option_text"
+                    :value="option.id"
                     v-model="selectedOptions[currentQuestionIndex]"
                     class="mr-2"
                   />
@@ -155,7 +157,6 @@
                 <button
                   @click="previousQuestion"
                   :disabled="currentQuestionIndex === 0"
-                  style="background-color: #31247d"
                   class="px-4 py-2 rounded bg-gray-400 text-white disabled:opacity-50"
                 >
                   Previous
@@ -163,7 +164,6 @@
                 <button
                   v-if="currentQuestionIndex < filteredQuestions.length - 1"
                   @click="nextQuestion"
-                  style="background-color: #31247d"
                   class="px-4 py-2 rounded bg-blue-600 text-white"
                 >
                   Next
@@ -173,7 +173,7 @@
                   @click="submitQuiz"
                   class="px-4 py-2 rounded bg-green-400 text-white"
                 >
-                  submit
+                  Submit
                 </button>
               </div>
             </div>
@@ -193,11 +193,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch } from "vue";
+import { reactive, ref, onMounted, computed, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useQuestionStore } from "../../stores/question";
-import Header from "../../components/Header.vue";
 import router from "../../router";
+import Header from "../../components/Header.vue";
 
 // Routing & Store
 const route = useRoute();
@@ -207,8 +207,8 @@ const questionStore = useQuestionStore();
 // State
 const showPopup = ref(false);
 const currentQuestionIndex = ref(0);
-const selectedOptions = ref({});
-const score = ref(null); // Store score percentage
+const selectedOptions = reactive({});
+const score = ref(null);
 
 // Load submitted answers on mount
 onMounted(async () => {
@@ -228,8 +228,8 @@ const filteredQuestions = computed(() =>
 // Initialize selectedOptions per question
 watch(filteredQuestions, (questions) => {
   questions.forEach((q, index) => {
-    if (!(index in selectedOptions.value)) {
-      selectedOptions.value[index] = q.is_multiple_choice ? [] : null;
+    if (!(index in selectedOptions)) {
+      selectedOptions[index] = q.is_multiple_choice ? [] : null;
     }
   });
 });
@@ -259,53 +259,43 @@ const previousQuestion = () => {
 
 // Submit Quiz
 const submitQuiz = async () => {
-  let totalPoints = 0; // Sum of earned points
+  let totalPoints = 0;
   let totalQuestions = filteredQuestions.value.length;
 
-  for (let index in selectedOptions.value) {
+  for (let index in selectedOptions) {
     const question = filteredQuestions.value[index];
-    const selected = selectedOptions.value[index];
+    const selected = selectedOptions[index];
 
-    const selectedOptionIds = question.options
-      .filter((opt) =>
-        Array.isArray(selected)
-          ? selected.includes(opt.option_text)
-          : selected === opt.option_text
-      )
-      .map((opt) => opt.id);
+    // Use selected directly (already in ID format)
+    const selectedOptionIds = Array.isArray(selected) ? selected : [selected];
 
     const answerData = {
       question_id: question.id,
       option_ids: selectedOptionIds,
-      user_id: 11, // Replace with dynamic user ID if needed
+      user_id: 11, // Replace with actual user ID if dynamic
     };
 
     try {
       const res = await questionStore.submitUserAnswer(answerData);
-
       if (res && typeof res.points === "number") {
         totalPoints += res.points;
-        console.log(`Points earned for Q${parseInt(index) + 1}:`, res.points);
-      } else {
-        console.warn("No points returned from backend for one question.");
       }
     } catch (error) {
       console.error("Error during quiz submission:", error);
     }
   }
 
-  // ✅ Correct percentage calculation using totalPoints
+  // Percentage Score
   const totalPercentage = (totalPoints / totalQuestions) * 100;
+  score.value = totalPercentage.toFixed(2);
 
-  score.value = totalPercentage.toFixed(2); // Display to user
-
-  // Redirect to result page with score
+  // Navigate to result
   router.push({
     name: "assessmentresult",
     query: { score: score.value },
   });
 
-  closePopup(); // Close the modal
+  closePopup();
 };
 </script>
 
