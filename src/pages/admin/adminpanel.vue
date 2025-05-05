@@ -60,16 +60,37 @@
           </svg>
           <span class="ml-3 hidden group-hover:inline">Assessment</span>
         </router-link>
+        <router-link
+          to="/admin/question"
+          class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white group-hover:flex group-hover:justify-center"
+        >
+          <!-- Use chosen icon here -->
+          <svg
+            class="h-5 w-5"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M18 10c0 4.418-3.582 8-8 8s-8-3.582-8-8 3.582-8 8-8 8 3.582 8 8zM9 14a1 1 0 112 0 1 1 0 01-2 0zm.25-8a2.25 2.25 0 00-2.25 2.25.75.75 0 001.5 0 .75.75 0 011.5 0c0 .414-.336.75-.75.75a.75.75 0 00-.75.75v.75a.75.75 0 001.5 0v-.126A2.25 2.25 0 009.25 6z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          <span class="ml-3 hidden group-hover:inline">Question</span>
+        </router-link>
       </nav>
-
       <!-- Footer -->
       <div class="p-4 border-t border-gray-400">
         <div
-          class="flex items-center justify-center group-hover:justify-start transition-all"
+          class="flex flex-col gap-2 group-hover:justify-start transition-all"
         >
-          <span class="text-sm hidden group-hover:inline"
-            >Logged in as Sopheap</span
+          <button
+            @click="logout"
+            class="text-red-400 hover:text-red-600 text-sm hidden group-hover:inline"
           >
+            Logout
+          </button>
         </div>
       </div>
     </aside>
@@ -82,7 +103,19 @@
 </template>
 
 <script>
+import { useRouter } from "vue-router";
+
 export default {
   name: "adminPanel",
+  setup() {
+    const router = useRouter();
+
+    const logout = () => {
+      localStorage.removeItem("token");
+      router.push("/");
+    };
+
+    return { logout };
+  },
 };
 </script>

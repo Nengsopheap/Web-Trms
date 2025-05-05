@@ -6,7 +6,7 @@ import Login from "../pages/login/Login.vue";
 import Dashboard from "../pages/admin/dashboard.vue";
 import Assessment from "../pages/admin/assessment.vue";
 import Adminpanel from "../pages/admin/adminpanel.vue";
-// import Question from "../pages/admin/question.vue";
+import adminQuestion from "../pages/admin/question.vue";
 
 const routes = [
   // for admin
@@ -18,7 +18,7 @@ const routes = [
     children: [
       { path: "dashboard", name: "dashboard", component: Dashboard },
       { path: "assessment", name: "assessment", component: Assessment },
-      // { path: "question", name: "question1", component: Question },
+      { path: "question", name: "adminquestion", component: adminQuestion },
     ],
   },
   // for user

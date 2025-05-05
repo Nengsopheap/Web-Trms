@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:5173/assessments"; // Change port if your NestJS runs on another port
+const BASE_URL = "http://localhost:3000/assessments"; // Change port if your NestJS runs on another port
 
 
 // apis/assessment.ts
