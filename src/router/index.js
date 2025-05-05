@@ -4,11 +4,25 @@ import Question from "../pages/assessment/question.vue";
 import assessmentresult from "../pages/assessment/assessmentresult.vue";
 import Login from "../pages/login/Login.vue";
 import Dashboard from "../pages/admin/dashboard.vue";
+import Assessment from "../pages/admin/assessment.vue";
+import Adminpanel from "../pages/admin/adminpanel.vue";
+// import Question from "../pages/admin/question.vue";
 
 const routes = [
-  { path: "/Home", name: "Home", component: Home },
+  // for admin
   { path: "/", name: "login", component: Login },
-  { path: "/dashboard", name: "dashboard", component: Dashboard },
+  // Admin routes under layout
+  {
+    path: "/admin",
+    component: Adminpanel,
+    children: [
+      { path: "dashboard", name: "dashboard", component: Dashboard },
+      { path: "assessment", name: "assessment", component: Assessment },
+      // { path: "question", name: "question1", component: Question },
+    ],
+  },
+  // for user
+  { path: "/Home", name: "Home", component: Home },
   {
     path: "/question/:assessmentId",
     name: "question",

@@ -1,22 +1,12 @@
 <template>
-    <div>
-      <h1>Admin Dashboard</h1>
-      <p>Welcome, Admin!</p>
-      <button @click="handleLogout">Logout</button>
-    </div>
-  </template>
-  
-  <script>
-  import { mapActions } from 'vuex';
-  
-  export default {
-    methods: {
-      ...mapActions('auth', ['logout']),
-      async handleLogout() {
-        await this.logout();
-        this.$router.push('/');
-      }
-    }
-  }
-  </script>
-  
+  <div>
+    <h1 class="text-2xl font-bold mb-4">Dashboard</h1>
+    <p class="text-gray-700">Welcome to the admin dashboard!</p>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "Dashboard",
+};
+</script>
