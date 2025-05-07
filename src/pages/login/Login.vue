@@ -193,6 +193,7 @@ import { ref } from "vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
 import { jwtDecode } from "jwt-decode";
+import { toast } from "vue3-toastify";
 
 const email = ref("");
 const password = ref("");
@@ -213,14 +214,21 @@ const login = async () => {
     const decodedToken = jwtDecode(token);
     const userRole = decodedToken.role;
 
+    toast.success("Login successful!", {
+      autoClose: 2000,
+      position: "top-right",
+    });
+
     if (userRole === "admin") {
       router.push("/admin/dashboard");
     } else {
       router.push("/home");
     }
-  } catch (err) {
-    error.value = err?.response?.data?.message || "Login failed";
-    console.error("Login failed:", err);
+  } catch (error) {
+    toast.error("Login failed. Please check your credentials.", {
+      autoClose: 3000,
+      position: "top-right",
+    });
   }
 };
 </script>
