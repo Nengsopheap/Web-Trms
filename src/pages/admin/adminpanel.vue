@@ -1,21 +1,15 @@
 <template>
   <div class="flex h-screen">
-    <!-- Sidebar (hover-expandable) -->
     <aside
       class="group w-20 hover:w-64 transition-all duration-300 text-white flex flex-col overflow-hidden"
-      style="background-color: #31247d"
+      style="background-color: #111827"
     >
       <div class="p-4">
         <div class="flex items-center" style="width: 50px; height: 50px">
-          <!-- Logo Image -->
           <img src="../../assets/image/FSA_Logo.png" alt="Logo" />
-          <!-- <span class=" text-sm font-bold hidden group-hover:inline-block" >
-            ការគ្រប់គ្រងហានិភ័យបច្ចេកវិទ្យាហិរញ្ញវត្ថុ
-          </span> -->
         </div>
       </div>
 
-      <!-- Navigation -->
       <nav class="mt-5 px-2 space-y-2 flex-1">
         <!-- Dashboard -->
         <router-link
@@ -80,7 +74,6 @@
           <span class="ml-3 hidden group-hover:inline">Question</span>
         </router-link>
       </nav>
-      <!-- Footer -->
       <div class="p-4 border-t border-gray-400">
         <div
           class="flex flex-col gap-2 group-hover:justify-start transition-all"
@@ -94,20 +87,28 @@
         </div>
       </div>
     </aside>
-
+    <!-- {{ $t('welcome') }} -->
     <!-- Main Content -->
-    <main class="flex-1 p-6 overflow-auto rounded-lg bg-white">
+    <main class="flex-1 p-5 overflow-auto rounded-lg bg-white">
+      <div class="text-end"><LanguageSwitcher /></div>
       <router-view />
+      
     </main>
   </div>
 </template>
 
 <script>
 import { useRouter } from "vue-router";
+import LanguageSwitcher from "../../components/LanguageSwitcher.vue";
+import { useI18n } from "vue-i18n";
 
 export default {
   name: "adminPanel",
+  components: {
+    LanguageSwitcher, // Registering LanguageSwitcher here
+  },
   setup() {
+    const { t } = useI18n();
     const router = useRouter();
 
     const logout = () => {
@@ -115,7 +116,7 @@ export default {
       router.push("/");
     };
 
-    return { logout };
+    return { logout, t };
   },
 };
 </script>

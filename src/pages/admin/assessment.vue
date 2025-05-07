@@ -1,14 +1,14 @@
 <template>
   <div class="p-3">
-    <h1 class="text-2xl font-bold mb-4">Assessments</h1>
+    <h1 class="text-2xl font-bold">Assessments</h1>
 
     <!-- Add New Button -->
     <div class="flex justify-end items-end">
       <button
         @click="openCreateModal"
-        class="bg-[#B90C0E] p-2 rounded-md text-white mb-3"
+        class="bg-[#111827] p-2 rounded-md text-white mb-3"
       >
-        Add New
+        + Add New
       </button>
     </div>
 
@@ -67,19 +67,26 @@
         class="bg-white p-6 rounded-lg shadow-[0_4px_12px_rgba(76,56,187,0.25)] overflow-x-auto"
       >
         <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-[#31247d] text-white">
+          <thead class="bg-[#111827] text-white">
             <tr>
               <th class="px-4 py-2 text-left text-sm font-medium">#</th>
-              <th class="px-4 py-2 text-left text-sm font-medium">Name</th>
-              <th class="px-4 py-2 text-left text-sm font-medium">
+              <th class="px-4 py-2 text-left text-sm font-medium">Category</th>
+              <th
+                class="px-4 py-2 text-right text-sm font-medium"
+                style="width: 550px"
+              >
                 Created At
               </th>
-              <th class="px-4 py-2 text-left text-sm font-medium">
+              <th
+                class="px-4 py-2 text-right text-sm font-medium"
+                style="width: 200px"
+              >
                 Updated At
               </th>
               <th class="px-4 py-2 text-right text-sm font-medium">Actions</th>
             </tr>
           </thead>
+
           <tbody class="divide-y divide-gray-100">
             <tr
               v-for="(a, index) in assessmentStore.assessments"
@@ -90,10 +97,12 @@
               <td class="px-4 py-2 text-sm font-semibold text-gray-600">
                 {{ a.name }}
               </td>
-              <td class="px-4 py-2 text-sm text-gray-600">
+              <!-- Right-aligned Created At -->
+              <td class="px-4 py-2 text-sm text-right text-gray-600">
                 {{ formatDate(a.created_at) }}
               </td>
-              <td class="px-4 py-2 text-sm text-gray-600">
+              <!-- Right-aligned Updated At -->
+              <td class="px-4 py-2 text-sm text-right text-gray-600">
                 {{ formatDate(a.updated_at) }}
               </td>
               <td class="px-4 py-2 text-right">
@@ -137,6 +146,7 @@
                     />
                   </svg>
                 </button>
+                <!-- {{ $t("welcome") }} -->
               </td>
             </tr>
           </tbody>
@@ -149,9 +159,10 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useAssessmentStore } from "../../stores/assessment";
+import { useI18n } from "vue-i18n";
 
 const assessmentStore = useAssessmentStore();
-
+const { t } = useI18n();
 const form = ref({
   name: "",
   description: "",
