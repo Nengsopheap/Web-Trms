@@ -48,6 +48,7 @@
             class="w-full mb-3 p-2 border rounded"
             required
           />
+
           <div class="flex flex-row gap-2">
             <select
               v-model="newQuestion.type"
@@ -123,6 +124,7 @@
               <span>No (Correct)</span>
             </div>
           </div>
+
           <div class="flex justify-end">
             <button
               type="submit"
@@ -147,7 +149,6 @@
           :key="index"
           class="mb-4 p-4 border border-gray-200 rounded-lg shadow-md"
         >
-          <!-- inside your question card header, beside the dropdown icon -->
           <div
             class="text-xl font-semibold mb-2 flex items-center justify-between"
           >
@@ -212,10 +213,10 @@
 </template>
 
 <script>
-import { ref, reactive, onMounted, watch, } from "vue";
+import { ref, reactive, onMounted, watch, computed } from "vue";
 import { useQuestionStore } from "../../stores/question";
 import { useAssessmentStore } from "../../stores/assessment";
-
+import { toast } from "vue3-toastify";
 export default {
   setup() {
     const showModal = ref(false);
@@ -231,6 +232,8 @@ export default {
       options: [{ option_text: "", is_correct: false }],
       type: "multiple_choice",
     });
+
+    const questions = computed(() => questionStore.submittedAnswers);
 
     const resetForm = () => {
       newQuestion.value = {
@@ -249,22 +252,29 @@ export default {
 
       const success = await questionStore.addQuestion(newQuestion.value);
       if (success) {
-        await questionStore.loadAllSubmittedAnswers(); // ✅ refresh the list
-        showModal.value = false; // ✅ close modal
-        resetForm(); // ✅ reset form
+        await questionStore.loadAllSubmittedAnswers();
+        showModal.value = false;
+        resetForm();
+        toast.success("create successful!", {
+          autoClose: 2000,
+          position: "top-right",
+        });
       }
     };
+
     const deleteQuestion = async (id) => {
-  const success = await questionStore.deleteQuestion(id); // Call delete
-  if (success) {
-    // This will update the list of questions after deletion
-    await questionStore.loadAllSubmittedAnswers(); 
-  } else {
-    alert("Failed to delete question");
-  }
-};
-
-
+      const success = await questionStore.deleteQuestion(id);
+      toast.success("Delete successful!", {
+        autoClose: 2000,
+        position: "top-right",
+      });
+      if (!success) {
+        toast.error("Delete fail", {
+          autoClose: 3000,
+          position: "top-right",
+        });
+      }
+    };
 
     const addOption = () => {
       newQuestion.value.options.push({ option_text: "", is_correct: false });
@@ -312,9 +322,9 @@ export default {
       showModal,
       newQuestion,
       assessments,
-      questions: questionStore.submittedAnswers,
-      loading: questionStore.loading,
-      error: questionStore.error,
+      questions,
+      loading: computed(() => questionStore.loading),
+      error: computed(() => questionStore.error),
       addOption,
       submitQuestion,
       onYesNoChange,
