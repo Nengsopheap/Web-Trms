@@ -1,14 +1,17 @@
 import { defineStore } from "pinia";
-import { getAllquestion, createQuestion, submitAnswer } from "../apis/question";
+import { getAllquestion, createQuestion, submitAnswer,deleteQuestion } from "../apis/question";
 
 export const useQuestionStore = defineStore("question", {
   state: () => ({
     submittedAnswers:
       JSON.parse(localStorage.getItem("submittedAnswers")) || [],
-      totalPoints: 0, // Store the total points accumulated
-      totalCorrect: 0, // Store the total correct answers
-      totalQuizzes: 0, // Store the total number of quizzes attempted
-      totalIncorrect: 0, // Store the total incorrect answers
+    questions: [],
+
+    // Store the total incorrect answers
+    totalPoints: 0,
+    totalCorrect: 0,
+    totalQuizzes: 0,
+    totalIncorrect: 0,
     loading: false,
     error: null,
   }),
@@ -37,17 +40,42 @@ export const useQuestionStore = defineStore("question", {
     async addQuestion(questionData) {
       try {
         await createQuestion(questionData);
-        // Optionally, you can reload or notify the user
+        return true;
       } catch (err) {
         this.error = err.message || "Failed to create question";
       }
     },
 
+    async updateQuestion(id, updatedData) {
+      try {
+        await updateQuestion(id, updatedData);
+        // Reload questions after update
+        await this.loadAllSubmittedAnswers();
+        return true;
+      } catch (err) {
+        this.error = err.message || "Failed to update question";
+        return false;
+      }
+    },
+
+    async deleteQuestion(id) {
+      try {
+        await deleteQuestion(id); // API call to delete the question
+        // Reload questions after deletion
+        await this.loadAllSubmittedAnswers(); 
+        return true;
+      } catch (err) {
+        this.error = err.message || "Failed to delete question";
+        return false;
+      }
+    },
+    
+    
+
     async submitUserAnswer(answerData) {
       try {
-        // Send the answerData to the backend and get the response
         const response = await submitAnswer(answerData);
-        console.log('Response from backend:', response);
+        console.log("Response from backend:", response);
 
         if (response) {
           // Accumulate the total points
@@ -64,10 +92,7 @@ export const useQuestionStore = defineStore("question", {
           this.totalQuizzes += 1;
 
           // Optionally, save the updated data to localStorage
-          localStorage.setItem(
-            "totalPoints",
-            JSON.stringify(this.totalPoints)
-          );
+          localStorage.setItem("totalPoints", JSON.stringify(this.totalPoints));
           localStorage.setItem(
             "totalCorrect",
             JSON.stringify(this.totalCorrect)
@@ -94,9 +119,6 @@ export const useQuestionStore = defineStore("question", {
       if (this.totalQuizzes === 0) return 0; // Avoid division by zero
       return (this.totalCorrect / this.totalQuizzes) * 100;
     },
-  
-    
-    
 
     async getassessmentid(id) {
       this.loading = true;
