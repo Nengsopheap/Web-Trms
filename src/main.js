@@ -7,6 +7,10 @@ import Vue3Toastify from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
 import en from "./locales/en.json";
 import kh from "./locales/kh.json";
+// main.js or main.ts
+
+import './style.css'; // or './src/style.css' if it's in src
+
 
 import { createI18n } from "vue-i18n";
 
