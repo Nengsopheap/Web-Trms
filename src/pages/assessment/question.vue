@@ -260,36 +260,75 @@ const previousQuestion = () => {
 // Submit Quiz
 const submitQuiz = async () => {
   let totalPoints = 0;
-  let totalQuestions = filteredQuestions.value.length;
+  const totalQuestions = filteredQuestions.value.length;
 
   for (let index in selectedOptions) {
     const question = filteredQuestions.value[index];
     const selected = selectedOptions[index];
-
-    // Use selected directly (already in ID format)
     const selectedOptionIds = Array.isArray(selected) ? selected : [selected];
 
+    const correctOptionIds = question.options
+      .filter((option) => option.is_correct)
+      .map((option) => option.id);
+
+    console.log(`Question ${parseInt(index) + 1}:`);
+    console.log(`Selected Options: ${JSON.stringify(selectedOptionIds)}`);
+    console.log(`Correct Option IDs: ${JSON.stringify(correctOptionIds)}`);
+
+    let points = 0;
+
+    if (correctOptionIds.length > 1) {
+      // Multiple-choice scoring
+      const correctCount = selectedOptionIds.filter((id) =>
+        correctOptionIds.includes(id)
+      ).length;
+
+      const wrongCount = selectedOptionIds.filter(
+        (id) => !correctOptionIds.includes(id)
+      ).length;
+
+      const pointsPerCorrect = 1 / correctOptionIds.length;
+      const pointsPerWrong = -1 / selectedOptionIds.length; // ❗Penalty per selection count
+
+      points = correctCount * pointsPerCorrect + wrongCount * pointsPerWrong;
+      points = Math.max(0, points); // Prevent negative scores
+
+      console.log(`Correct Count: ${correctCount}, Wrong Count: ${wrongCount}`);
+      console.log(
+        `Calculated Points for Question ${parseInt(index) + 1}: ${points}`
+      );
+    } else {
+      // Single-choice question
+      points = correctOptionIds.includes(selectedOptionIds[0]) ? 1 : 0;
+      console.log(
+        `Calculated Points for Question ${parseInt(index) + 1}: ${points}`
+      );
+    }
+
+    totalPoints += points;
+
+    // Send answer to backend
     const answerData = {
       question_id: question.id,
       option_ids: selectedOptionIds,
-      user_id: 11, // Replace with actual user ID if dynamic
+      user_id: 11, // Replace with real user ID
     };
 
     try {
       const res = await questionStore.submitUserAnswer(answerData);
-      if (res && typeof res.points === "number") {
-        totalPoints += res.points;
-      }
+      console.log("Backend Response:", res);
     } catch (error) {
-      console.error("Error during quiz submission:", error);
+      console.error("Error submitting answer:", error);
     }
   }
 
-  // Percentage Score
   const totalPercentage = (totalPoints / totalQuestions) * 100;
   score.value = totalPercentage.toFixed(2);
 
-  // Navigate to result
+  console.log(
+    `Total Points: ${totalPoints}, Total Percentage: ${score.value}%`
+  );
+
   router.push({
     name: "assessmentresult",
     query: { score: score.value },

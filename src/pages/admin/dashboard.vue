@@ -4,7 +4,9 @@
 
     <!-- Metrics -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-      <div class="bg-white shadow rounded-lg p-6 flex items-center gap-4">
+      <div
+        class="bg-white shadow-[0_4px_12px_rgba(76,56,187,0.25)] rounded-lg p-6 flex items-center gap-4"
+      >
         <div class="bg-blue-100 text-blue-600 p-3 rounded-full">
           <svg
             class="w-6 h-6"
@@ -26,7 +28,9 @@
         </div>
       </div>
 
-      <div class="bg-white shadow rounded-lg p-6 flex items-center gap-4">
+      <div
+        class="bg-white shadow-[0_4px_12px_rgba(76,56,187,0.25)] rounded-lg p-6 flex items-center gap-4"
+      >
         <div class="bg-green-100 text-green-600 p-3 rounded-full">
           <svg
             class="w-6 h-6"
@@ -48,7 +52,9 @@
         </div>
       </div>
 
-      <div class="bg-white shadow rounded-lg p-6 flex items-center gap-4">
+      <div
+        class="bg-white shadow-[0_4px_12px_rgba(76,56,187,0.25)] rounded-lg p-6 flex items-center gap-4"
+      >
         <div class="bg-yellow-100 text-yellow-600 p-3 rounded-full">
           <svg
             class="w-6 h-6"
@@ -77,7 +83,9 @@
     </div>
 
     <!-- Chart -->
-    <div class="bg-white shadow rounded-lg p-6">
+    <div
+      class="bg-white shadow-[0_4px_12px_rgba(76,56,187,0.25)] rounded-lg p-6"
+    >
       <h2 class="text-lg font-semibold mb-4 text-gray-700">Overview</h2>
       <div class="h-72">
         <Doughnut :data="chartData" :options="chartOptions" />
@@ -145,7 +153,7 @@ export default {
         legend: {
           position: "top",
           labels: {
-            color: "#374151", // Dark gray for the labels
+            color: "#374151", 
             font: {
               size: 14,
             },

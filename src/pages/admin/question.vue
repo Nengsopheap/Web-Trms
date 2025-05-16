@@ -5,9 +5,9 @@
     <div class="flex justify-end items-end mb-4">
       <button
         @click="showModal = true"
-        class="bg-[#B90C0E] p-2 rounded-md text-white"
+        class="bg-[#111827] p-2 rounded-md text-white"
       >
-        Create Question
+        + Add New
       </button>
     </div>
 
