@@ -7,7 +7,7 @@ import Dashboard from "../pages/admin/dashboard.vue";
 import Assessment from "../pages/admin/assessment.vue";
 import Adminpanel from "../pages/admin/adminpanel.vue";
 import adminQuestion from "../pages/admin/question.vue";
-
+import LearnTipsByToptip from "../pages/learntip/learntip.vue"
 const routes = [
   // for admin
   { path: "/", name: "login", component: Login },
@@ -33,6 +33,11 @@ const routes = [
     path: "/quiz-result",
     name: "assessmentresult",
     component: assessmentresult,
+  },
+    {
+    path: "/toptip/:id/learntips",
+    name: "learntipsByToptip",
+    component: LearnTipsByToptip,
   },
 ];
 

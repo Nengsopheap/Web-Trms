@@ -22,7 +22,7 @@
         </div>
       </div>
       <div class="flex flex-row​ gap-4 text-white font-bold">
-        <router-link to="/" class="cursor-pointer">ទំព័រដើម</router-link>
+        <router-link to="/Home" class="cursor-pointer">ទំព័រដើម</router-link>
 
         <Dropdown
           label="ច្បាប់និងលិខិតបទដ្ឋានគតិយុត្ត"
