@@ -15,7 +15,7 @@
         </div>
 
         <!-- Right Section (Image) -->
-        <div class="flex-2">
+        <div class="flex-2 rounded-full">
           <img
             :src="items[currentIndex].image"
             alt="Cybersecurity"
@@ -49,7 +49,7 @@
 
 <script setup>
 import { ref } from "vue";
-import fsaLogo from "../assets/image/FSA_Logo.png";
+import fsaLogo from "../assets/image/Cyber.jpg";
 const items = ref([
   {
     title: "Cybersecurity Hub",
