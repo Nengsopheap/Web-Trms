@@ -10,6 +10,15 @@ import adminQuestion from "../pages/admin/question.vue";
 import LearnTipsByToptip from "../pages/learntip/learntip.vue";
 import Faq from "../pages/FAQ/Faq.vue";
 import Contact from "../pages/Contact/Contact.vue";
+import Link from "../pages/FAQ/link.vue";
+import Law from "../pages/law/law.vue";
+import Regulation from "../pages/law/regulation.vue";
+import News from "../pages/resources/news.vue";
+import Report from "../pages/resources/report.vue";
+import Event from "../pages/resources/event.vue";
+import Takerisk from "../pages/aboutTRM/Takerisk.vue";
+import Takecare from "../pages/aboutTRM/takecare.vue";
+import TRM from "../pages/aboutTRM/TRM.vue";
 const routes = [
   // for admin
   { path: "/", name: "login", component: Login },
@@ -42,14 +51,59 @@ const routes = [
     component: LearnTipsByToptip,
   },
   {
-    path: "/faq",
+    path: "/faq-and-term",
     name: "FAQ",
     component: Faq,
   },
   {
-    path: "/Contact",
+    path: "/faq-and-term/Contact",
     name: "Contact",
     component: Contact,
+  },
+  {
+    path: "/faq-and-term/link",
+    name: "link",
+    component: Link,
+  },
+  {
+    path: "/laws",
+    name: "laws",
+    component: Law,
+  },
+  {
+    path: "/laws/regulation",
+    name: "regulation",
+    component: Regulation,
+  },
+  {
+    path: "/resources/new",
+    name: "resources",
+    component: News,
+  },
+  {
+    path: "/resources/reports",
+    name: "report",
+    component: Report,
+  },
+  {
+    path: "/resources/event",
+    name: "event",
+    component: Event,
+  },
+  {
+    path: "/about/takeRisk",
+    name: "takerisk",
+    component: Takerisk,
+  },
+  {
+    path: "/about/takecare",
+    name: "takecare",
+    component: Takecare,
+  },
+  {
+    path: "/about/TMR",
+    name: "TMR",
+    component: TRM,
   },
 ];
 

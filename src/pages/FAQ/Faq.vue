@@ -1,11 +1,11 @@
 <template>
   <div class="min-h-screen flex flex-col relative overflow-hidden">
     <!-- Background Animation -->
-    <div class="area absolute inset-0 -z-10">
+    <!-- <div class="area absolute inset-0 -z-10">
       <ul class="circles">
         <li v-for="n in 10" :key="n"></li>
       </ul>
-    </div>
+    </div> -->
 
     <!-- Page Content -->
     <Header />

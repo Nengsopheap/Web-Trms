@@ -27,32 +27,32 @@
         <Dropdown
           label="ច្បាប់និងលិខិតបទដ្ឋានគតិយុត្ត"
           :items="[
-            { text: 'ច្បាប់', href: '#' },
-            { text: 'អនុក្រឹត្យ', href: '#' },
+            { text: 'ច្បាប់', href: '/laws' },
+            { text: 'អនុក្រឹត្យ', href: '/laws/regulation' },
           ]"
         />
         <Dropdown
           label="ធនធាន"
           :items="[
-            { text: 'ព័ត៌មាន', href: '#' },
-            { text: 'របាយការណ៍', href: '#' },
-            { text: 'ព្រឹត្តិការណ៍', href: '#' },
+            { text: 'ព័ត៌មាន', href: '/resources/new' },
+            { text: 'របាយការណ៍', href: '/resources/reports' },
+            { text: 'ព្រឹត្តិការណ៍', href: '/resources/event' },
           ]"
         />
         <Dropdown
           label="អំពី TRM"
           :items="[
-            { text: 'ការវាយតម្លៃ', href: '#' },
-            { text: 'ការការពារខ្លូនរបស់អ្នក', href: '#' },
-            { text: 'TRM', href: '#' },
+            { text: 'ការវាយតម្លៃ', href: '/about/takeRisk' },
+            { text: 'ការការពារខ្លូនរបស់អ្នក', href: '/about/takecare' },
+            { text: 'TRM', href: '/about/TMR' },
           ]"
         />
         <Dropdown
           label="ផ្សេងៗ"
           :items="[
-            { text: 'សំណួរ-ចម្លើយ', href: '/faq' },
-            { text: 'ព័ត៌មានទំនាក់ទំនង', href: '/Contact' },
-            { text: 'តំណភ្ជាប់សំខាន់ៗ', href: '#' },
+            { text: 'សំណួរ-ចម្លើយ', href: '/faq-and-term' },
+            { text: 'ព័ត៌មានទំនាក់ទំនង', href: '/faq-and-term/Contact' },
+            { text: 'តំណភ្ជាប់សំខាន់ៗ', href: '/faq-and-term/link' },
           ]"
         />
         <!-- <svg
