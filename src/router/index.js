@@ -7,7 +7,9 @@ import Dashboard from "../pages/admin/dashboard.vue";
 import Assessment from "../pages/admin/assessment.vue";
 import Adminpanel from "../pages/admin/adminpanel.vue";
 import adminQuestion from "../pages/admin/question.vue";
-import LearnTipsByToptip from "../pages/learntip/learntip.vue"
+import LearnTipsByToptip from "../pages/learntip/learntip.vue";
+import Faq from "../pages/FAQ/Faq.vue";
+import Contact from "../pages/Contact/Contact.vue";
 const routes = [
   // for admin
   { path: "/", name: "login", component: Login },
@@ -34,10 +36,20 @@ const routes = [
     name: "assessmentresult",
     component: assessmentresult,
   },
-    {
+  {
     path: "/toptip/:id/learntips",
     name: "learntipsByToptip",
     component: LearnTipsByToptip,
+  },
+  {
+    path: "/faq",
+    name: "FAQ",
+    component: Faq,
+  },
+  {
+    path: "/Contact",
+    name: "Contact",
+    component: Contact,
   },
 ];
 
