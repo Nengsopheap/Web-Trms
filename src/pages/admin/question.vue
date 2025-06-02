@@ -10,7 +10,6 @@
         + Add New
       </button>
     </div>
-
     <!-- Modal -->
     <div
       v-if="showModal"
