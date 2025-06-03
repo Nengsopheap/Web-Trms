@@ -24,17 +24,19 @@
       <div
         class="flex flex-row gap-4 text-white font-bold justify-center items-center"
       >
-        <router-link to="/Home" class="cursor-pointer">{{$t('Home')}}</router-link>
+        <router-link to="/Home" class="cursor-pointer">{{
+          $t("Home")
+        }}</router-link>
 
         <Dropdown
-          label="ច្បាប់និងលិខិតបទដ្ឋានគតិយុត្ត"
+          :label="$t('Law_and_Regulation')"
           :items="[
             { text: 'ច្បាប់', href: '/laws' },
             { text: 'អនុក្រឹត្យ', href: '/laws/regulation' },
           ]"
         />
         <Dropdown
-          label="ធនធាន"
+          :label="$t('Resources')"
           :items="[
             { text: 'ព័ត៌មាន', href: '/resources/new' },
             { text: 'របាយការណ៍', href: '/resources/reports' },
@@ -42,7 +44,7 @@
           ]"
         />
         <Dropdown
-          label="អំពី TRM"
+          :label="$t('About')"
           :items="[
             { text: 'ការវាយតម្លៃ', href: '/about/takeRisk' },
             { text: 'ការការពារខ្លូនរបស់អ្នក', href: '/about/takecare' },
@@ -50,7 +52,7 @@
           ]"
         />
         <Dropdown
-          label="ផ្សេងៗ"
+          :label="$t('Others')"
           :items="[
             { text: 'សំណួរ-ចម្លើយ', href: '/faq-and-term' },
             { text: 'ព័ត៌មានទំនាក់ទំនង', href: '/faq-and-term/Contact' },

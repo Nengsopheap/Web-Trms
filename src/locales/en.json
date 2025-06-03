@@ -1,5 +1,11 @@
 {
-    "welcome": "Welcome!",
-    "Home":"Home"
+  "welcome": "Welcome!",
+  "Home": "Home",
+  "Law_and_Regulation": "Law and Regulation",
+  "Resources":"Resources",
+  "About": "About TRM",
+  "Others": "Others",
+  "title": {
+    "law": "ច្បាប់"
+  }
 }
-  
