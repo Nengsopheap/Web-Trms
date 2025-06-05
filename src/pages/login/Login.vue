@@ -209,9 +209,21 @@ const login = async () => {
     });
 
     const token = response.data.access_token;
-    localStorage.setItem("token", token);
+    localStorage.setItem("token", token); // ✅ Save token
 
+    // Check it includes user_id
+
+    // ✅ Save user_id to localStorage
     const decodedToken = jwtDecode(token);
+    console.log("Decoded token:", decodedToken); // ✅ should now include user_id
+    const userId = decodedToken.user_id || decodedToken.id;
+    if (userId) {
+      localStorage.setItem("user_id", userId);
+      console.log("Saved user ID:", userId);
+    } else {
+      console.warn("User ID not found in login response");
+    }
+
     const userRole = decodedToken.role;
 
     toast.success("Login successful!", {

@@ -284,7 +284,6 @@
         </div>
       </div>
       <div class="mt-5">
-        
         <Test />
       </div>
       <Footer />
@@ -367,8 +366,9 @@ const previousQuestion = () => {
 const submitQuiz = async () => {
   let totalPoints = 0;
   const totalQuestions = filteredQuestions.value.length;
+  const userId = localStorage.getItem("user_id"); // 🔹 Get user ID dynamically
 
-  for (let i = 0; i < filteredQuestions.value.length; i++) {
+  for (let i = 0; i < totalQuestions; i++) {
     const question = filteredQuestions.value[i];
     const selected = selectedOptions[i];
     const selectedOptionIds = Array.isArray(selected) ? selected : [selected];
@@ -407,7 +407,7 @@ const submitQuiz = async () => {
     const answerData = {
       question_id: question.id,
       option_ids: selectedOptionIds,
-      user_id: 11,
+      user_id: userId, // 🔹 Use dynamic user ID
     };
 
     try {
