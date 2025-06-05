@@ -5,7 +5,7 @@
         <li v-for="lesson in lessons" :key="lesson.id">
           <div class="flex flex-col">
             <div class="flex justify-between">
-              <div class="flex flex-col gap-2">
+              <div class="flex flex-col gap-2 justify-center">
                 <div class="text-[#333333] font-bold font-kantumruy text-2xl">
                   {{ locale === "kh" ? lesson.title_kh : lesson.title_en }}
                 </div>
@@ -107,6 +107,7 @@
                   </defs>
                 </svg>
               </div>
+
               <div class="flex flex-col gap-3">
                 <div
                   class="group flex-1 border-[3px] border-s-[#31247D] border-t-[#31247D] shadow-md rounded-lg p-4 bg-white hover:bg-[#31247D] hover:text-white transition-colors duration-300 hover:border-t-transparent hover:border-s-transparent hover:border-b-red-400 hover:border-r-red-400 w-[800px]"
@@ -232,25 +233,42 @@
     </div>
   </div>
 </template>
-
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, watch, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { useLessonStore } from "../stores/lesson";
 import { useI18n } from "vue-i18n";
 
 const { locale } = useI18n();
 const route = useRoute();
-const assessmentId = parseInt(route.params.assessmentId);
 const lessonStore = useLessonStore();
+
 const lessons = ref([]);
 
-onMounted(async () => {
-  if (!isNaN(assessmentId)) {
-    await lessonStore.loadLessonsByAssessmentId(assessmentId);
-    lessons.value = lessonStore.lessons;
-  } else {
-    console.warn("Invalid assessmentId in route");
+// Load lessons with clearing first
+const loadLessons = async (assessmentId) => {
+  lessonStore.lessons = []; // ✅ Force reset store state first
+  lessons.value = []; // ✅ Reset local reactive state too
+
+  const id = parseInt(assessmentId);
+  if (!isNaN(id)) {
+    await lessonStore.loadLessonsByAssessmentId(id);
+    lessons.value = [...lessonStore.lessons]; // Ensure reactivity
   }
+};
+
+// Initial load
+onMounted(() => {
+  loadLessons(route.params.assessmentId);
 });
+
+// Watch for changes to assessmentId and reload
+watch(
+  () => route.params.assessmentId,
+  async (newId, oldId) => {
+    if (newId !== oldId) {
+      await loadLessons(newId);
+    }
+  }
+);
 </script>
