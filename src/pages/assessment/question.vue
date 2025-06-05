@@ -2,7 +2,6 @@
   <div>
     <Header />
 
-    <!-- Header Section -->
     <div class="min-h-screen" style="background-color: #ffffff">
       <div class="flex flex-row justify-center items-center p-6 text-white">
         <div class="flex flex-col gap-4 mt-24" style="margin-right: 200px">
@@ -127,98 +126,169 @@
           Learn More
         </button>
       </div>
-    </div>
 
-    <!-- Show Score After Quiz -->
-
-    <!-- Popup Modal -->
-    <div
-      v-if="showPopup"
-      class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50"
-    >
+      <!-- Cold System-Like Difficulty Selection Modal -->
       <div
-        class="bg-white p-8 rounded-xl shadow-2xl max-w-xl w-full text-gray-800 relative transition-all"
+        v-if="selectingDifficulty"
+        class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 backdrop-blur-sm"
       >
-        <div class="flex justify-center mt-10">
-          <div class="w-full max-w-2xl">
-            <div v-if="loading">Loading questions...</div>
-            <div v-else-if="error" class="text-red-500">{{ error }}</div>
-            <div v-else>
-              <div class="ml-1">
-                Question {{ currentQuestionIndex + 1 }}
-                <span class="text-red-500">*</span>
-              </div>
+        <div
+          class="bg-gray-900 text-white w-full max-w-md mx-auto px-8 py-6 rounded-xl shadow-lg border border-gray-700 transition-all"
+        >
+          <h2
+            class="text-xl font-mono font-semibold mb-6 text-center tracking-wide"
+          >
+            System Prompt: Select Quiz Difficulty
+          </h2>
 
-              <p
-                class="font-semibold mb-2 bg-gray-200 p-5 rounded-lg mt-1"
-                style="height: 200px"
-              >
+          <div class="flex flex-col gap-4">
+            <button
+              @click="chooseDifficulty('easy')"
+              class="w-full py-2 bg-gray-800 hover:bg-green-600 border border-gray-700 rounded-md text-sm font-mono tracking-wider transition duration-200"
+            >
+              EASY — Level 1
+            </button>
+            <button
+              @click="chooseDifficulty('medium')"
+              class="w-full py-2 bg-gray-800 hover:bg-yellow-500 border border-gray-700 rounded-md text-sm font-mono tracking-wider transition duration-200"
+            >
+              MEDIUM — Level 2
+            </button>
+            <button
+              @click="chooseDifficulty('hard')"
+              class="w-full py-2 bg-gray-800 hover:bg-red-500 border border-gray-700 rounded-md text-sm font-mono tracking-wider transition duration-200"
+            >
+              HARD — Level 3
+            </button>
+          </div>
+
+          <div class="text-center">
+            <button
+              @click="selectingDifficulty = false"
+              class="text-xs text-gray-400 hover:text-white font-mono underline tracking-wider"
+            >
+              Cancel & Return to Console
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quiz Modal -->
+
+      <div
+        v-if="showPopup"
+        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 backdrop-blur-sm z-50"
+      >
+        <div
+          class="bg-gray-900 text-white w-full max-w-2xl mx-auto p-8 rounded-2xl shadow-2xl border border-gray-700 relative"
+        >
+          <!-- Close Button -->
+          <button
+            @click="closePopup"
+            class="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl focus:outline-none"
+          >
+            &times;
+          </button>
+
+          <div v-if="loading" class="text-center font-mono text-gray-300">
+            Loading questions...
+          </div>
+
+          <div v-else-if="error" class="text-red-400 text-center font-mono">
+            {{ error }}
+          </div>
+
+          <div v-else>
+            <!-- Question Header -->
+            <div class="mb-4">
+              <p class="text-sm font-mono text-gray-400">
+                QUESTION {{ currentQuestionIndex + 1 }}
+                <span class="text-red-500">*</span>
+              </p>
+            </div>
+
+            <!-- Question Box -->
+            <div class="bg-gray-800 p-5 rounded-lg mb-6 min-h-[160px]">
+              <p class="text-base font-semibold text-gray-100 leading-relaxed">
                 {{ filteredQuestions[currentQuestionIndex].question_text }}
               </p>
+            </div>
 
-              <div class="ml-1">choice <span class="text-red-500">*</span></div>
+            <!-- Choices -->
 
-              <div class="mb-6 p-4 rounded-md">
-                <div
-                  v-for="option in filteredQuestions[currentQuestionIndex]
-                    .options"
-                  :key="option.id"
-                  class="flex items-center mb-2 mt-2 border bg-gray-200 rounded-lg p-1"
-                >
-                  <input
-                    :type="
-                      filteredQuestions[currentQuestionIndex].is_multiple_choice
-                        ? 'checkbox'
-                        : 'radio'
-                    "
-                    :name="'question_' + currentQuestionIndex"
-                    :value="option.id"
-                    v-model="selectedOptions[currentQuestionIndex]"
-                    class="mr-2"
-                  />
-                  {{ option.option_text }}
-                </div>
-              </div>
+            <div class="ml-1 text-sm text-gray-400 font-mono mb-2">
+              Choice <span class="text-red-500">*</span>
+              |
+              <span class="italic">
+                {{
+                  filteredQuestions[currentQuestionIndex].is_yes_no
+                    ? "Yes or No"
+                    : filteredQuestions[currentQuestionIndex].is_multiple_choice
+                    ? "Multiple answers"
+                    : "Single answer"
+                }}
+              </span>
+            </div>
 
-              <!-- Navigation Buttons -->
-              <div class="flex justify-end gap-3">
-                <button
-                  @click="previousQuestion"
-                  :disabled="currentQuestionIndex === 0"
-                  class="px-4 py-2 rounded bg-gray-400 text-white disabled:opacity-50"
-                >
-                  Previous
-                </button>
+            <!-- Choices -->
+            <div class="space-y-3 mb-6">
+              <label
+                v-for="option in filteredQuestions[currentQuestionIndex]
+                  .options"
+                :key="option.id"
+                class="flex items-center bg-gray-800 p-3 rounded-md border border-gray-700 hover:bg-gray-700 transition"
+              >
+                <input
+                  :type="
+                    filteredQuestions[currentQuestionIndex].is_multiple_choice
+                      ? 'checkbox'
+                      : 'radio'
+                  "
+                  :name="'question_' + currentQuestionIndex"
+                  :value="option.id"
+                  v-model="selectedOptions[currentQuestionIndex]"
+                  class="mr-3 accent-indigo-500"
+                />
+                <span class="text-gray-200">{{ option.option_text }}</span>
+              </label>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between mt-8">
+              <button
+                @click="previousQuestion"
+                :disabled="currentQuestionIndex === 0"
+                class="bg-gray-700 hover:bg-gray-600 text-white font-mono px-4 py-2 rounded-md disabled:opacity-40 transition"
+              >
+                ◀ Prev
+              </button>
+
+              <div>
                 <button
                   v-if="currentQuestionIndex < filteredQuestions.length - 1"
                   @click="nextQuestion"
-                  class="px-4 py-2 rounded bg-blue-600 text-white"
+                  class="bg-indigo-600 hover:bg-indigo-700 text-white font-mono px-6 py-2 rounded-md transition"
                 >
-                  Next
+                  Next ▶
                 </button>
                 <button
                   v-else
                   @click="submitQuiz"
-                  class="px-4 py-2 rounded bg-green-400 text-white"
+                  class="bg-green-500 hover:bg-green-600 text-white font-mono px-6 py-2 rounded-md transition"
                 >
-                  Submit
+                  Submit ✔
                 </button>
               </div>
             </div>
           </div>
         </div>
-
-        <!-- Close Button -->
-        <button
-          @click="closePopup"
-          class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-2xl focus:outline-none"
-        >
-          &times;
-        </button>
       </div>
+      <div class="mt-5">
+        
+        <Test />
+      </div>
+      <Footer />
     </div>
-    <Test />
-    <Footer />
   </div>
 </template>
 
@@ -226,40 +296,39 @@
 import { reactive, ref, onMounted, computed, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useQuestionStore } from "../../stores/question";
+import { useLessonStore } from "../../stores/lesson";
 import router from "../../router";
 import Header from "../../components/Header.vue";
 import Test from "../../components/test.vue";
-import { useLessonStore } from "../../stores/lesson";
 import Footer from "../../components/footer.vue";
 
-// Routing & Store
 const route = useRoute();
 const assessmentId = parseInt(route.params.assessmentId);
 const questionStore = useQuestionStore();
 const lessonStore = useLessonStore();
 
-// State
 const showPopup = ref(false);
+const selectingDifficulty = ref(false);
+const difficulty = ref(null); // 'easy', 'medium', 'hard'
 const currentQuestionIndex = ref(0);
 const selectedOptions = reactive({});
 const score = ref(null);
 
-// Load submitted answers on mount
 onMounted(async () => {
   await questionStore.loadAllSubmittedAnswers(assessmentId);
 });
 
-// Get loading and error states from store
 const { loading, error } = questionStore;
 
-// Filter questions by assessment ID
 const filteredQuestions = computed(() =>
   questionStore.submittedAnswers.filter(
-    (q) => q.assessment && q.assessment.id == assessmentId
+    (q) =>
+      q.assessment &&
+      q.assessment.id == assessmentId &&
+      (!difficulty.value || q.category === difficulty.value)
   )
 );
 
-// Initialize selectedOptions per question
 watch(filteredQuestions, (questions) => {
   questions.forEach((q, index) => {
     if (!(index in selectedOptions)) {
@@ -268,8 +337,13 @@ watch(filteredQuestions, (questions) => {
   });
 });
 
-// Start and close popup
 const startQuiz = () => {
+  selectingDifficulty.value = true;
+};
+
+const chooseDifficulty = (level) => {
+  difficulty.value = level;
+  selectingDifficulty.value = false;
   showPopup.value = true;
   score.value = null;
 };
@@ -278,7 +352,6 @@ const closePopup = () => {
   showPopup.value = false;
 };
 
-// Navigation
 const nextQuestion = () => {
   if (currentQuestionIndex.value < filteredQuestions.value.length - 1) {
     currentQuestionIndex.value++;
@@ -291,28 +364,27 @@ const previousQuestion = () => {
   }
 };
 
-// Submit Quiz
 const submitQuiz = async () => {
   let totalPoints = 0;
   const totalQuestions = filteredQuestions.value.length;
 
-  for (let index in selectedOptions) {
-    const question = filteredQuestions.value[index];
-    const selected = selectedOptions[index];
+  for (let i = 0; i < filteredQuestions.value.length; i++) {
+    const question = filteredQuestions.value[i];
+    const selected = selectedOptions[i];
     const selectedOptionIds = Array.isArray(selected) ? selected : [selected];
+
+    if (!question || !question.options) {
+      console.warn(`Question at index ${i} is missing or has no options`);
+      continue;
+    }
 
     const correctOptionIds = question.options
       .filter((option) => option.is_correct)
       .map((option) => option.id);
 
-    console.log(`Question ${parseInt(index) + 1}:`);
-    console.log(`Selected Options: ${JSON.stringify(selectedOptionIds)}`);
-    console.log(`Correct Option IDs: ${JSON.stringify(correctOptionIds)}`);
-
     let points = 0;
 
     if (correctOptionIds.length > 1) {
-      // Multiple-choice scoring
       const correctCount = selectedOptionIds.filter((id) =>
         correctOptionIds.includes(id)
       ).length;
@@ -322,35 +394,24 @@ const submitQuiz = async () => {
       ).length;
 
       const pointsPerCorrect = 1 / correctOptionIds.length;
-      const pointsPerWrong = -1 / selectedOptionIds.length; // ❗Penalty per selection count
+      const pointsPerWrong = -1 / selectedOptionIds.length;
 
       points = correctCount * pointsPerCorrect + wrongCount * pointsPerWrong;
-      points = Math.max(0, points); // Prevent negative scores
-
-      console.log(`Correct Count: ${correctCount}, Wrong Count: ${wrongCount}`);
-      console.log(
-        `Calculated Points for Question ${parseInt(index) + 1}: ${points}`
-      );
+      points = Math.max(0, points);
     } else {
-      // Single-choice question
       points = correctOptionIds.includes(selectedOptionIds[0]) ? 1 : 0;
-      console.log(
-        `Calculated Points for Question ${parseInt(index) + 1}: ${points}`
-      );
     }
 
     totalPoints += points;
 
-    // Send answer to backend
     const answerData = {
       question_id: question.id,
       option_ids: selectedOptionIds,
-      user_id: 11, // Replace with real user ID
+      user_id: 11,
     };
 
     try {
-      const res = await questionStore.submitUserAnswer(answerData);
-      console.log("Backend Response:", res);
+      await questionStore.submitUserAnswer(answerData);
     } catch (error) {
       console.error("Error submitting answer:", error);
     }
@@ -358,10 +419,6 @@ const submitQuiz = async () => {
 
   const totalPercentage = (totalPoints / totalQuestions) * 100;
   score.value = totalPercentage.toFixed(2);
-
-  console.log(
-    `Total Points: ${totalPoints}, Total Percentage: ${score.value}%`
-  );
 
   router.push({
     name: "assessmentresult",
@@ -373,5 +430,5 @@ const submitQuiz = async () => {
 </script>
 
 <style scoped>
-/* Add any scoped custom styles here */
+/* Add custom styles if needed */
 </style>

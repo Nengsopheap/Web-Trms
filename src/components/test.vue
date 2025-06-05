@@ -3,7 +3,7 @@
     <div v-if="lessons.length > 0" class="container">
       <ul>
         <li v-for="lesson in lessons" :key="lesson.id">
-          <div class="flex flex-col mt-24">
+          <div class="flex flex-col">
             <div class="flex justify-between">
               <div class="flex flex-col gap-2">
                 <div class="text-[#333333] font-bold font-kantumruy text-2xl">
@@ -20,13 +20,13 @@
                 <div
                   class="text-[#333333] font-bold font-kantumruy text-2xl mt-4"
                 >
-                  {{ locale === "kh" ? lesson.title_kh : lesson.title_en }}
+                  {{ locale === "kh" ? lesson.title1_kh : lesson.title1_en }}
                 </div>
                 <div class="w-[500px] font-bold text-black text-opacity-80">
                   {{
                     locale === "kh"
-                      ? lesson.title_answer_kh
-                      : lesson.title_answer_en
+                      ? lesson.title1_answer_kh
+                      : lesson.title1_answer_en
                   }}
                 </div>
               </div>
@@ -67,10 +67,10 @@
                 </svg>
               </div>
             </div>
-            <div class="text-center text-[#333333] font-bold text-xl">
+            <div class="text-center text-[#333333] font-bold text-xl mt-10">
               Best Cybersecurity Tips to Stay Safe Online 🚀
             </div>
-            <div class="flex justify-between mt-10 gap-10">
+            <div class="flex justify-between mt-10 gap-20 items-center">
               <div>
                 <svg
                   width="516"
@@ -107,16 +107,119 @@
                   </defs>
                 </svg>
               </div>
-              <div class="flex flex-col w-[650px]">
-                <div class="font-bold text-xl w[300px]">
-                  {{ locale === "kh" ? lesson.content_kh : lesson.content_en }}
+              <div class="flex flex-col gap-3">
+                <div
+                  class="group flex-1 border-[3px] border-s-[#31247D] border-t-[#31247D] shadow-md rounded-lg p-4 bg-white hover:bg-[#31247D] hover:text-white transition-colors duration-300 hover:border-t-transparent hover:border-s-transparent hover:border-b-red-400 hover:border-r-red-400 w-[800px]"
+                >
+                  {{ locale === "kh" ? lesson.tip1_kh : lesson.tip1_en }}
+
+                  <!-- Hidden content until hover -->
+                  <div
+                    class="opacity-0 group-hover:opacity-100 transition-opacity duration-100 mt-2"
+                  >
+                    <ul class="list-disc ml-5 text-sm font-normal">
+                      <li>
+                        <div class="bg-red">
+                          {{
+                            locale === "kh"
+                              ? lesson.tip1_answer_kh
+                              : lesson.tip1_answer_en
+                          }}
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
-                <div class="mt-5">
-                  {{
-                    locale === "kh"
-                      ? lesson.description_kh
-                      : lesson.description_en
-                  }}
+                <div
+                  class="group flex-1 border-[3px] border-s-[#31247D] border-t-[#31247D] shadow-md rounded-lg p-4 bg-white hover:bg-[#31247D] hover:text-white transition-colors duration-300 hover:border-t-transparent hover:border-s-transparent hover:border-b-red-400 hover:border-r-red-400"
+                >
+                  {{ locale === "kh" ? lesson.tip2_kh : lesson.tip2_en }}
+
+                  <!-- Hidden content until hover -->
+                  <div
+                    class="opacity-0 group-hover:opacity-100 transition-opacity duration-100 mt-2"
+                  >
+                    <ul class="list-disc ml-5 text-sm font-normal">
+                      <li>
+                        <div class="bg-red">
+                          {{
+                            locale === "kh"
+                              ? lesson.tip2_answer_kh
+                              : lesson.tip2_answer_en
+                          }}
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <div
+                  class="group flex-1 border-[3px] border-s-[#31247D] border-t-[#31247D] shadow-md rounded-lg p-4 bg-white hover:bg-[#31247D] hover:text-white transition-colors duration-300 hover:border-t-transparent hover:border-s-transparent hover:border-b-red-400 hover:border-r-red-400"
+                >
+                  {{ locale === "kh" ? lesson.tip3_kh : lesson.tip3_en }}
+
+                  <!-- Hidden content until hover -->
+                  <di
+                    v
+                    class="opacity-0 group-hover:opacity-100 transition-opacity duration-100 mt-2"
+                  >
+                    <ul class="list-disc ml-5 text-sm font-normal">
+                      <li>
+                        <div class="bg-red">
+                          {{
+                            locale === "kh"
+                              ? lesson.tip3_answer_kh
+                              : lesson.tip3_answer_en
+                          }}
+                        </div>
+                      </li>
+                    </ul>
+                  </di>
+                </div>
+                <div
+                  class="group flex-1 border-[3px] border-s-[#31247D] border-t-[#31247D] shadow-md rounded-lg p-4 bg-white hover:bg-[#31247D] hover:text-white transition-colors duration-300 hover:border-t-transparent hover:border-s-transparent hover:border-b-red-400 hover:border-r-red-400"
+                >
+                  {{ locale === "kh" ? lesson.tip4_kh : lesson.tip4_en }}
+
+                  <!-- Hidden content until hover -->
+                  <di
+                    v
+                    class="opacity-0 group-hover:opacity-100 transition-opacity duration-100 mt-2"
+                  >
+                    <ul class="list-disc ml-5 text-sm font-normal">
+                      <li>
+                        <div class="bg-red">
+                          {{
+                            locale === "kh"
+                              ? lesson.tip4_answer_kh
+                              : lesson.tip4_answer_en
+                          }}
+                        </div>
+                      </li>
+                    </ul>
+                  </di>
+                </div>
+                <div
+                  class="group flex-1 border-[3px] border-s-[#31247D] border-t-[#31247D] shadow-md rounded-lg p-4 bg-white hover:bg-[#31247D] hover:text-white transition-colors duration-300 hover:border-t-transparent hover:border-s-transparent hover:border-b-red-400 hover:border-r-red-400"
+                >
+                  {{ locale === "kh" ? lesson.tip5_kh : lesson.tip5_en }}
+
+                  <!-- Hidden content until hover -->
+                  <di
+                    v
+                    class="opacity-0 group-hover:opacity-100 transition-opacity duration-100 mt-2"
+                  >
+                    <ul class="list-disc ml-5 text-sm font-normal">
+                      <li>
+                        <div class="bg-red">
+                          {{
+                            locale === "kh"
+                              ? lesson.tip5_answer_kh
+                              : lesson.tip5_answer_en
+                          }}
+                        </div>
+                      </li>
+                    </ul>
+                  </di>
                 </div>
               </div>
             </div>

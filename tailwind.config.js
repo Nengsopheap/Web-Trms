@@ -6,6 +6,15 @@ export default {
       fontFamily: {
         kantumruy: ['"Kantumruy Pro"', "sans-serif"],
       },
+      keyframes: {
+        theft: {
+          '0%, 100%': { transform: 'translateX(0)' },
+          '50%': { transform: 'translateX(10px)' }, // horizontal sneak
+        },
+      },
+      animation: {
+        theft: 'theft 3s ease-in-out infinite',
+      },
     },
     container: {
       center: true,
