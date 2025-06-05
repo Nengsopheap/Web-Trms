@@ -32,5 +32,7 @@ const currentFlag = computed(() => flags[locale.value]);
 // Toggle function: Switch between 'en' and 'kh'
 function toggleLanguage() {
   locale.value = locale.value === "en" ? "kh" : "en";
+  localStorage.setItem("locale", locale.value);
 }
+
 </script>
