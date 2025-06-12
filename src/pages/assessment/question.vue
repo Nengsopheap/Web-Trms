@@ -202,7 +202,8 @@
             <!-- Question Header -->
             <div class="mb-4">
               <p class="text-sm font-mono text-gray-400">
-                QUESTION {{ currentQuestionIndex + 1 }}
+                QUESTION {{ currentQuestionIndex + 1 }} /
+                {{ filteredQuestions.length }}
                 <span class="text-red-500">*</span>
               </p>
             </div>
@@ -239,16 +240,31 @@
                 class="flex items-center bg-gray-800 p-3 rounded-md border border-gray-700 hover:bg-gray-700 transition"
               >
                 <input
-                  :type="
+                  type="checkbox"
+                  v-if="
                     filteredQuestions[currentQuestionIndex].is_multiple_choice
-                      ? 'checkbox'
-                      : 'radio'
                   "
+                  :checked="
+                    selectedOptions[currentQuestionIndex]?.includes(option.id)
+                  "
+                  @change="
+                    handleCheckboxChange(
+                      $event,
+                      currentQuestionIndex,
+                      option.id
+                    )
+                  "
+                  class="mr-3 accent-indigo-500"
+                />
+                <input
+                  type="radio"
+                  v-else
                   :name="'question_' + currentQuestionIndex"
                   :value="option.id"
                   v-model="selectedOptions[currentQuestionIndex]"
                   class="mr-3 accent-indigo-500"
                 />
+
                 <span class="text-gray-200">{{ option.option_text }}</span>
               </label>
             </div>
@@ -335,6 +351,35 @@ watch(filteredQuestions, (questions) => {
     }
   });
 });
+
+const handleCheckboxChange = (event, questionIndex, optionId) => {
+  const question = filteredQuestions.value[questionIndex];
+  const correctOptionCount = question.options.filter(
+    (o) => o.is_correct
+  ).length;
+
+  if (!selectedOptions[questionIndex]) {
+    selectedOptions[questionIndex] = [];
+  }
+
+  const selected = selectedOptions[questionIndex];
+
+  if (event.target.checked) {
+    if (selected.length < correctOptionCount) {
+      selected.push(optionId);
+    } else {
+      event.target.checked = false; // Revert UI
+      // alert(
+      //   `You can only select ${correctOptionCount} option(s) for this question.`
+      // );
+    }
+  } else {
+    const idx = selected.indexOf(optionId);
+    if (idx !== -1) {
+      selected.splice(idx, 1);
+    }
+  }
+};
 
 const startQuiz = () => {
   selectingDifficulty.value = true;
