@@ -8,12 +8,15 @@
           class="flex flex-col text-white font-kantumruy"
           style="margin-top: 100px"
         >
-          <div class="text-3xl font-semibold">Laws</div>
+          <div class="text-3xl font-semibold">ច្បាប់</div>
           <div class="text-lg font-bold mt-2">
-            Home <span class="text-red-600"> > </span> <span>Laws</span>
+            ទំព័រដើម <span class="text-red-600"> > </span> <span>ច្បាប់</span>
           </div>
         </div>
       </div>
+    </div>
+    <div class="text-center">
+      ច្បាប់
     </div>
     <!-- <ContactUS /> -->
     <Footer />

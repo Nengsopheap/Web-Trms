@@ -10,7 +10,7 @@
                   {{ locale === "kh" ? lesson.title_kh : lesson.title_en }}
                 </div>
 
-                <div class="w-[500px] font-bold text-black text-opacity-80">
+                <div class="w-[650px] font-bold text-black text-opacity-80">
                   {{
                     locale === "kh"
                       ? lesson.title_answer_kh
@@ -22,7 +22,7 @@
                 >
                   {{ locale === "kh" ? lesson.title1_kh : lesson.title1_en }}
                 </div>
-                <div class="w-[500px] font-bold text-black text-opacity-80">
+                <div class="w-[650px] font-bold text-black text-opacity-80">
                   {{
                     locale === "kh"
                       ? lesson.title1_answer_kh
@@ -223,6 +223,9 @@
                   </di>
                 </div>
               </div>
+            </div>
+            <div>
+              hi
             </div>
           </div>
         </li>

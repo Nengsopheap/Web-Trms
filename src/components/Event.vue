@@ -82,9 +82,9 @@ import { ref } from "vue";
 import fsaLogo from "../assets/image/Cyber.jpg";
 const items = ref([
   {
-    title: "Cybersecurity Hub",
+    title: "សន្តិសុខសាយបឺរ",
     description:
-      "Stay ahead of cyber threats with real-time insights and best practices. Learn how to protect your digital assets and secure your online presence.",
+      "សន្តិសុខសាយបឺរគឺជាការអនុវត្តន៍ក្នុងការការពារប្រព័ន្ធ បណ្តាញ និងទិន្នន័យពីភាពគំរាមកំហែងសាយបឺរ ដូចជា ការជ្រៀតចូលខុសច្បាប់ កម្មវិធីវីរុស ការលួចព័ត៌មានតាមអ៊ីមែល និងការចូលប្រើដោយគ្មានការអនុញ្ញាត។ វាធានានូវភាពសម្ងាត់ ភាពត្រឹមត្រូវ និងភាពអាចប្រើបាននៃព័ត៌មានឌីជីថល។.",
     image: fsaLogo,
   },
   {
