@@ -6,6 +6,24 @@
   "About": "About TRM",
   "Others": "Others",
   "title": {
-    "law": "ច្បាប់"
+    "law": "ច្បាប់",
+    "Questions": "Questions",
+    "No_questions_found": "No questions found",
+    "Type": "Type",
+    "Points": "Points",
+    "Quiz_Categoty": "Quiz Category",
+    "Actions": "Actions",
+    "Filter_by_Assessment": "Filter by Assessment",
+    "select_assessment": "Select Assessment",
+    "Enter_Question": "Enter Question",
+    "Options": "Options",
+    "Correct": "Correct"
+  },
+
+  "button": {
+    "create_question": "Add New",
+    "add_option": "Add Option",
+    "Cancel": "Cancel",
+    "Submit": "Submit"
   }
 }

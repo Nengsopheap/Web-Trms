@@ -7,6 +7,24 @@
   "Others": "ផ្សេងៗ",
 
   "title": {
-    "law": "ច្បាប់"
+    "law": "ច្បាប់",
+    "Questions": "សំណួរ",
+    "No_questions_found": "មិនមានសំណួរណាមួយទេ",
+    "Type": "ប្រភេទ",
+    "Points": "ពិន្ទុ",
+    "Quiz_Categoty": "ប្រភេទសំណួរ",
+    "Actions": "សកម្មភាព",
+    "Filter_by_Assessment": "ជម្រើសរើសប្រភេទសំណួរ",
+    "select_assessment": "ជ្រើសរើសប្រភេទសំណួរ",
+    "Enter_Question": "បញ្ចូលសំណួរ",
+    "Options": "ជម្រើស",
+    "Correct": "ត្រូវ"
+  },
+
+  "button": {
+   "create_question": "បង្កើតសំណួរ",
+    "add_option": "បន្ថែមជម្រើស",
+    "Cancel": "បោះបង់",
+    "Submit": "ដាក់ស្នើ"
   }
 }
