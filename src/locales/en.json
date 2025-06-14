@@ -17,7 +17,12 @@
     "select_assessment": "Select Assessment",
     "Enter_Question": "Enter Question",
     "Options": "Options",
-    "Correct": "Correct"
+    "Correct": "Correct",
+    "level": "Level",
+    "level1": "Level 1",
+    "level2": "Level 2",
+    "level3": "Level 3",
+    "enter_option": "Enter Options"
   },
 
   "button": {
@@ -25,5 +30,13 @@
     "add_option": "Add Option",
     "Cancel": "Cancel",
     "Submit": "Submit"
+  },
+
+  "validation": {
+    "no_assessment_selected": "Please select an assessment",
+    "choose_one_option": "Please mark at least one option as correct",
+    "Points": "Points must be greater than 0",
+    "Yes_or_No": "Please mark Yes or No as correct",
+    "Create_successful": "Question created successfully"
   }
 }

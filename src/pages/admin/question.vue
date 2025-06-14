@@ -82,6 +82,21 @@
             />
           </div>
 
+          <!-- Category / Level Selector -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              {{ $t("title.level") }}
+            </label>
+            <select
+              v-model="newQuestion.category"
+              class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#111827]"
+            >
+              <option value="easy">{{ $t("title.level1") }}</option>
+              <option value="medium">{{ $t("title.level2") }}</option>
+              <option value="hard">{{ $t("title.level3") }}</option>
+            </select>
+          </div>
+
           <!-- Type & Points -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
@@ -128,9 +143,17 @@
               :key="index"
               class="flex items-center gap-2 mb-3"
             >
+              <button
+                type="button"
+                @click="removeOption(index)"
+                class="text-red-500 hover:text-red-700 text-sm"
+                title="Remove option"
+              >
+                ✖
+              </button>
               <input
                 v-model="option.option_text"
-                placeholder="Option Text"
+                :placeholder="$t('title.enter_option')"
                 class="flex-1 p-2 border rounded"
                 required
               />
@@ -142,15 +165,6 @@
                 />
                 {{ $t("title.Correct") }}
               </label>
-
-              <button
-                type="button"
-                @click="removeOption(index)"
-                class="text-red-500 hover:text-red-700 text-sm"
-                title="Remove option"
-              >
-                ✖
-              </button>
             </div>
             <button
               type="button"
@@ -262,18 +276,23 @@
                   {{ question.assessment?.name || "N/A" }}
                 </td>
                 <td class="px-4 py-2 text-sm text-right">
-                  <button
-                    @click="openViewModal(question)"
-                    class="text-blue-600 hover:underline text-sm mr-3"
-                  >
-                    View
-                  </button>
-                  <button
-                    @click="deleteQuestion(question.id)"
-                    class="text-red-600 hover:underline text-sm"
-                  >
-                    Delete
-                  </button>
+                  <div class="flex justify-end gap-2">
+
+                    <button
+                      @click="openViewModal(question)"
+                      class="text-blue-600 hover:text-blue-800"
+                      title="View"
+                    >
+                      <Icon icon="mdi:eye" class="w-5 h-5" />
+                    </button>
+                    <button
+                      @click="deleteQuestion(question.id)"
+                      class="text-red-600 hover:text-red-800"
+                      title="Delete"
+                    >
+                      <Icon icon="mdi:trash-can" class="w-5 h-5" />
+                    </button>
+                  </div>
                 </td>
               </tr>
               <tr v-if="isDropdownOpen(index)">
@@ -321,7 +340,20 @@
           <h2 class="text-lg font-kantumruy font-semibold mb-4 text-gray-700">
             {{ viewQuestion.question_text }}
           </h2>
-
+          <!-- Level (Category) -->
+          <p class="text-sm text-gray-600 mb-4">
+            {{ $t("title.level") }}:
+            <span
+              :class="{
+                'text-green-600': viewQuestion.category === 'easy',
+                'text-yellow-600': viewQuestion.category === 'medium',
+                'text-red-600': viewQuestion.category === 'hard',
+              }"
+              class="capitalize font-semibold"
+            >
+              {{ viewQuestion.category }}
+            </span>
+          </p>
           <p class="text-sm text-gray-600 mb-4">
             {{ $t("title.Points") }}: {{ viewQuestion.points }}
           </p>
@@ -347,11 +379,18 @@
           </div>
         </div>
         <div class="px-6 py-4 border-t flex justify-end bg-gray-50">
-          <button
+          <!-- <button
             @click="closeViewModal"
             class="px-4 py-2 rounded border text-gray-700 hover:bg-gray-100"
           >
             Close
+          </button> -->
+          <button
+            type="button"
+            @click="closeViewModal"
+            class="px-4 py-2 rounded border text-gray-700 hover:bg-gray-100"
+          >
+            {{ $t("button.Cancel") }}
           </button>
         </div>
       </div>
@@ -364,9 +403,15 @@ import { ref, reactive, onMounted, watch, computed } from "vue";
 import { useQuestionStore } from "../../stores/question";
 import { useAssessmentStore } from "../../stores/assessment";
 import { toast } from "vue3-toastify";
+import { useI18n } from "vue-i18n";
+import { Icon } from "@iconify/vue"; // ✅ Works with <script setup>
 
 export default {
+  components: {
+    Icon, // 👈 Add this!
+  },
   setup() {
+    const { t } = useI18n();
     const showModal = ref(false);
     const questionStore = useQuestionStore();
     const assessmentStore = useAssessmentStore();
@@ -377,6 +422,7 @@ export default {
       question_text: "",
       assessment_id: null,
       points: 0,
+      category: "easy",
       options: [{ option_text: "", is_correct: false }],
       type: "multiple_choice",
     });
@@ -410,16 +456,59 @@ export default {
     };
 
     const submitQuestion = async () => {
+      const question = newQuestion.value;
+      if (!question.assessment_id) {
+        toast.error(t("validation.no_assessment_selected"), {
+          autoClose: 3000,
+          position: "top-right",
+        });
+        return;
+      }
+      // Basic validation
+      if (!newQuestion.value.points || newQuestion.value.points <= 0) {
+        toast.error(t("validation.Points"), {
+          autoClose: 3000,
+          position: "top-right",
+        });
+        return;
+      }
+
+      // Validate options
+      if (
+        ["multiple_choice", "single_choice"].includes(newQuestion.value.type) &&
+        !newQuestion.value.options.some((opt) => opt.is_correct)
+      ) {
+        toast.error(t("validation.choose_one_option"), {
+          autoClose: 3000,
+          position: "top-right",
+        });
+
+        return;
+      }
+
+      if (
+        newQuestion.value.type === "yes_no" &&
+        !newQuestion.value.options.some((opt) => opt.is_correct)
+      ) {
+        toast.error(t("validation.Yes_or_No"), {
+          autoClose: 3000,
+          position: "top-right",
+        });
+        return;
+      }
+
+      // Flags for backend
       newQuestion.value.is_multiple_choice =
         newQuestion.value.type === "multiple_choice";
       newQuestion.value.is_yes_no = newQuestion.value.type === "yes_no";
 
+      // Submit to store
       const success = await questionStore.addQuestion(newQuestion.value);
       if (success) {
         await questionStore.loadAllSubmittedAnswers();
         showModal.value = false;
         resetForm();
-        toast.success("Create successful!", {
+        toast.success(t("validation.Create_successful"), {
           autoClose: 2000,
           position: "top-right",
         });
