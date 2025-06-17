@@ -12,3 +12,14 @@ export const fetchAllUsers = async () => {
     throw error;
   }
 };
+
+export const fetchAllUserScores = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/users/all-scores`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching user scores:', error);
+    throw error;
+  }
+};
+

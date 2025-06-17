@@ -414,7 +414,8 @@ const previousQuestion = () => {
 const submitQuiz = async () => {
   let totalPoints = 0;
   const totalQuestions = filteredQuestions.value.length;
-  const userId = localStorage.getItem("user_id"); // 🔹 Get user ID dynamically
+  const userId = localStorage.getItem("user_id"); // 👤 Get user ID
+  const quizHistory = []; // 📝 Store user's quiz history
 
   for (let i = 0; i < totalQuestions; i++) {
     const question = filteredQuestions.value[i];
@@ -452,10 +453,22 @@ const submitQuiz = async () => {
 
     totalPoints += points;
 
+    // 👇 Save this question's details to history
+    quizHistory.push({
+      question_text: question.question_text,
+      options: question.options,
+      selectedOptionIds: selectedOptionIds,
+      correctOptionIds: correctOptionIds,
+      isCorrect:
+        selectedOptionIds.length === correctOptionIds.length &&
+        selectedOptionIds.every((id) => correctOptionIds.includes(id)),
+    });
+
+    // ✅ Submit the user's answer to the backend (optional)
     const answerData = {
       question_id: question.id,
       option_ids: selectedOptionIds,
-      user_id: userId, // 🔹 Use dynamic user ID
+      user_id: userId,
     };
 
     try {
@@ -465,14 +478,20 @@ const submitQuiz = async () => {
     }
   }
 
+  // 🎯 Final Score
   const totalPercentage = (totalPoints / totalQuestions) * 100;
   score.value = totalPercentage.toFixed(2);
 
+  // 💾 Store history in localStorage
+  localStorage.setItem("quiz_history", JSON.stringify(quizHistory));
+
+  // 🔁 Redirect to results page
   router.push({
     name: "assessmentresult",
     query: { score: score.value },
   });
 
+  // ✅ Close the popup if needed
   closePopup();
 };
 </script>

@@ -1,6 +1,6 @@
 <template>
-  <div class="p-6">
-    <h1 class="text-3xl font-bold mb-6 text-gray-800">Admin Dashboard</h1>
+  <div class="p-3">
+    <h1 class="text-2xl font-bold mb-6 font-kantumruy">{{$t("title.admin_dashboard")}}</h1>
 
     <!-- Loading State -->
     <div v-if="isLoading" class="text-center text-gray-500 py-20">
@@ -19,7 +19,7 @@
           </div>
           <div>
             <p class="text-xl font-bold">{{ assessments.length }}</p>
-            <p class="text-gray-500">{{$t("title.Assessment")}}</p>
+            <p class="text-gray-500">{{ $t("title.Assessment") }}</p>
           </div>
         </div>
 
@@ -27,19 +27,11 @@
           class="bg-white shadow-[0_4px_12px_rgba(76,56,187,0.25)] rounded-lg p-6 flex items-center gap-4"
         >
           <div class="bg-green-100 text-green-600 p-3 rounded-full">
-            <svg
-              class="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              viewBox="0 0 24 24"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-            </svg>
+            <CircleCheckBig />
           </div>
           <div>
             <p class="text-xl font-bold">{{ questions.length }}</p>
-            <p class="text-gray-500">{{$t("title.Questions")}}</p>
+            <p class="text-gray-500">{{ $t("title.Questions") }}</p>
           </div>
         </div>
 
@@ -54,8 +46,16 @@
               stroke-width="2"
               viewBox="0 0 24 24"
             >
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3" />
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 2a10 10 0 100 20 10 10 0 000-20z" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 8v4l3 3"
+              />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 2a10 10 0 100 20 10 10 0 000-20z"
+              />
             </svg>
           </div>
           <div>
@@ -65,28 +65,47 @@
         </div>
       </div>
 
-      <!-- Chart -->
-      <div class="bg-white shadow-[0_4px_12px_rgba(76,56,187,0.25)] rounded-lg p-6">
-        <h2 class="text-lg font-semibold mb-4 text-gray-700">Overview</h2>
-        <div class="h-72">
-          <Doughnut :data="chartData" :options="chartOptions" />
+      <!-- Charts -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Line Chart -->
+        <div
+          class="bg-white shadow-[0_4px_12px_rgba(76,56,187,0.25)] rounded-lg p-6"
+        >
+          <h2 class="text-lg font-semibold mb-4 text-gray-700">
+            Questions per Assessment
+          </h2>
+          <div class="h-72">
+            <Line :data="lineChartData" :options="lineChartOptions" />
+          </div>
+        </div>
+        <!-- Doughnut Chart -->
+        <div
+          class="bg-white shadow-[0_4px_12px_rgba(76,56,187,0.25)] rounded-lg p-6"
+        >
+          <h2 class="text-lg font-semibold mb-4 text-gray-700">Overview</h2>
+          <div class="h-72">
+            <Doughnut :data="doughnutChartData" :options="chartOptions" />
+          </div>
         </div>
       </div>
     </div>
   </div>
 </template>
+
 <script>
 import { ref, onMounted, computed } from "vue";
-import { Doughnut } from "vue-chartjs";
-import { HelpCircle } from "lucide-vue-next";
+import { Doughnut, Line } from "vue-chartjs";
+import { HelpCircle, CircleCheckBig } from "lucide-vue-next";
 import {
   Chart as ChartJS,
   Title,
   Tooltip,
   Legend,
   ArcElement,
-  CategoryScale,
+  LineElement,
+  PointElement,
   LinearScale,
+  CategoryScale,
 } from "chart.js";
 import { useAssessmentStore } from "../../stores/assessment";
 import { useQuestionStore } from "../../stores/question";
@@ -96,14 +115,18 @@ ChartJS.register(
   Tooltip,
   Legend,
   ArcElement,
-  CategoryScale,
-  LinearScale
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale
 );
 
 export default {
   components: {
     Doughnut,
+    Line,
     HelpCircle,
+    CircleCheckBig,
   },
   setup() {
     const isLoading = ref(true);
@@ -114,7 +137,8 @@ export default {
     const assessments = computed(() => assessmentStore.assessments);
     const questions = computed(() => questionStore.submittedAnswers);
 
-    const chartData = computed(() => ({
+    // Doughnut chart
+    const doughnutChartData = computed(() => ({
       labels: ["Assessments", "Questions"],
       datasets: [
         {
@@ -128,6 +152,48 @@ export default {
       ],
     }));
 
+    // Compute number of questions per assessment
+    const questionCountsByAssessment = computed(() => {
+      const assessmentMap = {};
+      assessments.value.forEach((a) => {
+        assessmentMap[a.id] = a.title || ` ${a.name}`;
+      });
+
+      const counts = {};
+      questions.value.forEach((q) => {
+        const id = q.assessment_id || q.assessment?.id;
+        if (!counts[id]) counts[id] = 0;
+        counts[id]++;
+      });
+
+      const labels = [];
+      const data = [];
+
+      Object.keys(counts)
+        .sort((a, b) => a - b)
+        .forEach((id) => {
+          labels.push(assessmentMap[id] || `Assessment ${id}`);
+          data.push(counts[id]);
+        });
+
+      return { labels, data };
+    });
+
+    // Line chart
+    const lineChartData = computed(() => ({
+      labels: questionCountsByAssessment.value.labels,
+      datasets: [
+        {
+          label: "Questions",
+          data: questionCountsByAssessment.value.data,
+          fill: false,
+          borderColor: "#6366F1",
+          backgroundColor: "#6366F1",
+          tension: 0.3,
+        },
+      ],
+    }));
+
     const chartOptions = {
       responsive: true,
       maintainAspectRatio: false,
@@ -136,15 +202,46 @@ export default {
           position: "top",
           labels: {
             color: "#374151",
-            font: {
-              size: 14,
-            },
+            font: { size: 14 },
           },
         },
         tooltip: {
           backgroundColor: "#111827",
           titleColor: "#ffffff",
           bodyColor: "#D1D5DB",
+        },
+      },
+    };
+
+    const lineChartOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            stepSize: 1,
+            color: "#4B5563",
+          },
+          title: {
+            display: true,
+            text: "Number of Questions",
+            color: "#6B7280",
+          },
+        },
+        x: {
+          ticks: {
+            color: "#4B5563",
+          },
+        },
+      },
+      plugins: {
+        legend: {
+          position: "top",
+          labels: {
+            color: "#374151",
+            font: { size: 14 },
+          },
         },
       },
     };
@@ -161,8 +258,10 @@ export default {
       isLoading,
       assessments,
       questions,
-      chartData,
+      doughnutChartData,
+      lineChartData,
       chartOptions,
+      lineChartOptions,
     };
   },
 };

@@ -1,9 +1,9 @@
 <template>
-  <div class="">
-    <h1 class="text-2xl font-bold mb-4 ml-4">{{ $t("title.Questions") }}</h1>
+  <div class="p-3">
+    <h1 class="text-2xl font-bold mb-6">{{ $t("title.Questions") }}</h1>
 
     <!-- Button to open modal -->
-    <div class="flex justify-between items-center px-4">
+    <div class="flex justify-between items-center">
       <div>
         <label class="mr-2 text-sm text-gray-600"
           >{{ $t("title.Filter_by_Assessment") }}:</label
@@ -28,7 +28,7 @@
     <!-- Modal -->
     <div
       v-if="showModal"
-      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
     >
       <div class="bg-white w-full max-w-2xl rounded-lg shadow-lg relative">
         <!-- Close Modal Button -->
@@ -219,7 +219,7 @@
     </div>
 
     <!-- Filter + Table View -->
-    <div class="w-full mx-auto p-4">
+    <div class="w-full mx-auto mt-4">
       <div
         class="bg-white p-6 rounded-lg shadow-[0_4px_12px_rgba(76,56,187,0.25)] overflow-x-auto"
       >

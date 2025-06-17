@@ -30,7 +30,9 @@
     "created_at": "Created At",
     "updated_at": "Updated At",
     "dashboard": "Dashboard",
-    "user_assessment_history": "User Assessment History"
+    "user_assessment_history": "User Assessment History",
+    "user_score": "User Score",
+    "admin_dashboard": "Admin Dashboard"
   },
 
   "button": {
