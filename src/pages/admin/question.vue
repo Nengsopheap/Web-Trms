@@ -212,7 +212,7 @@
             @click="submitQuestion"
             class="px-5 py-2 rounded bg-[#111827] text-white hover:bg-gray-900"
           >
-            {{ $t("button.Submit") }}
+            {{ $t("button.create_question") }}
           </button>
         </div>
       </div>
@@ -277,7 +277,6 @@
                 </td>
                 <td class="px-4 py-2 text-sm text-right">
                   <div class="flex justify-end gap-2">
-
                     <button
                       @click="openViewModal(question)"
                       class="text-blue-600 hover:text-blue-800"
@@ -404,11 +403,11 @@ import { useQuestionStore } from "../../stores/question";
 import { useAssessmentStore } from "../../stores/assessment";
 import { toast } from "vue3-toastify";
 import { useI18n } from "vue-i18n";
-import { Icon } from "@iconify/vue"; // ✅ Works with <script setup>
+import { Icon } from "@iconify/vue"; 
 
 export default {
   components: {
-    Icon, // 👈 Add this!
+    Icon, 
   },
   setup() {
     const { t } = useI18n();

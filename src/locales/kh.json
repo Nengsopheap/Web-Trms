@@ -23,14 +23,23 @@
     "level1": "កម្រិត ១",
     "level2": "កម្រិត ២",
     "level3": "កម្រិត ៣",
-    "enter_option": "បង្កើតចម្លើយ"
+    "enter_option": "បង្កើតចម្លើយ",
+    "question": "សំណួរ",
+    "Assessment": "ប្រភេទ Assessment",
+    "Category": "ប្រភេទ",
+    "description": "ការពិពណ៌នា",
+    "created_at": "បានបង្កើតនៅ",
+    "updated_at": "បានអាប់ដេតនៅ",
+    "dashboard": "ផ្ទាំងគ្រប់គ្រង",
+    "user_assessment_history": "ប្រវត្តិប្រភេទសំណួររបស់អ្នកប្រើប្រាស់"
   },
 
   "button": {
    "create_question": "បង្កើតសំណួរ",
     "add_option": "បន្ថែមជម្រើស",
     "Cancel": "បោះបង់",
-    "Submit": "ដាក់ស្នើ"
+    "Submit": "ដាក់ស្នើ",
+    "create_assessment": "+ បង្កើតប្រភេទសំណួរ"
   },
 
   "validation": {

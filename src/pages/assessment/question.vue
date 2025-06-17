@@ -130,44 +130,47 @@
       <!-- Cold System-Like Difficulty Selection Modal -->
       <div
         v-if="selectingDifficulty"
-        class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 backdrop-blur-sm"
+        class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50"
       >
         <div
-          class="bg-gray-900 text-white w-full max-w-md mx-auto px-8 py-6 rounded-xl shadow-lg border border-gray-700 transition-all"
+          class="bg-white dark:bg-gray-900 text-gray-900 dark:text-white w-full max-w-md mx-4 sm:mx-auto px-6 py-8 rounded-2xl shadow-xl border border-gray-300 dark:border-gray-700 transition-all"
         >
+          <!-- Title -->
           <h2
-            class="text-xl font-mono font-semibold mb-6 text-center tracking-wide"
+            class="text-2xl font-bold mb-6 text-center tracking-wide flex items-center justify-center gap-2"
           >
-            System Prompt: Select Quiz Difficulty
+            🎯 សូមជ្រើសរើសកម្រិតនៃការសំណួរ
           </h2>
 
+          <!-- Difficulty Buttons -->
           <div class="flex flex-col gap-4">
             <button
               @click="chooseDifficulty('easy')"
-              class="w-full py-2 bg-gray-800 hover:bg-green-600 border border-gray-700 rounded-md text-sm font-mono tracking-wider transition duration-200"
+              class="w-full py-3 bg-green-100 hover:bg-green-200 dark:bg-green-800 dark:hover:bg-green-700 text-green-900 dark:text-white rounded-lg text-sm font-medium transition"
             >
-              EASY — Level 1
+              ងាយ — កម្រិតទី ១
             </button>
             <button
               @click="chooseDifficulty('medium')"
-              class="w-full py-2 bg-gray-800 hover:bg-yellow-500 border border-gray-700 rounded-md text-sm font-mono tracking-wider transition duration-200"
+              class="w-full py-3 bg-yellow-100 hover:bg-yellow-200 dark:bg-yellow-700 dark:hover:bg-yellow-600 text-yellow-900 dark:text-white rounded-lg text-sm font-medium transition"
             >
-              MEDIUM — Level 2
+              មធ្យម — កម្រិតទី ២
             </button>
             <button
               @click="chooseDifficulty('hard')"
-              class="w-full py-2 bg-gray-800 hover:bg-red-500 border border-gray-700 rounded-md text-sm font-mono tracking-wider transition duration-200"
+              class="w-full py-3 bg-red-100 hover:bg-red-200 dark:bg-red-700 dark:hover:bg-red-600 text-red-900 dark:text-white rounded-lg text-sm font-medium transition"
             >
-              HARD — Level 3
+              ពិបាក — កម្រិតទី ៣
             </button>
           </div>
 
-          <div class="text-center">
+          <!-- Cancel -->
+          <div class="text-center mt-6">
             <button
               @click="selectingDifficulty = false"
-              class="text-xs text-gray-400 hover:text-white font-mono underline tracking-wider"
+              class="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white font-medium underline transition"
             >
-              Cancel & Return to Console
+              បោះបង់ & ត្រឡប់ទៅ
             </button>
           </div>
         </div>

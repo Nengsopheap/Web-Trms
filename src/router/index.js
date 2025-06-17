@@ -19,6 +19,8 @@ import Event from "../pages/resources/event.vue";
 import Takerisk from "../pages/aboutTRM/Takerisk.vue";
 import Takecare from "../pages/aboutTRM/takecare.vue";
 import TRM from "../pages/aboutTRM/TRM.vue";
+import user_assessment_history from "../pages/admin/user_assessment_history.vue";
+
 const routes = [
   // for admin
   { path: "/", name: "login", component: Login },
@@ -30,6 +32,7 @@ const routes = [
       { path: "dashboard", name: "dashboard", component: Dashboard },
       { path: "assessment", name: "assessment", component: Assessment },
       { path: "question", name: "adminquestion", component: adminQuestion },
+      { path: "user_assessment_history", name: "user_assessment_history", component: user_assessment_history },
     ],
   },
   // for user

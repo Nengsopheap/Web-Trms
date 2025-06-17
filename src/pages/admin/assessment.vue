@@ -1,14 +1,16 @@
 <template>
   <div class="p-3">
-    <h1 class="text-2xl font-bold">Assessments</h1>
+    <h1 class="text-2xl font-bold font-kantumruy">
+      {{ $t("title.Assessment") }}
+    </h1>
 
     <!-- Add New Button -->
     <div class="flex justify-end items-end">
       <button
         @click="openCreateModal"
-        class="bg-[#111827] p-2 rounded-md text-white mb-3"
+        class="bg-[#111827] p-2 rounded-md text-white mb-3 font-kantumruy"
       >
-        + Add New
+        {{ $t("button.create_assessment") }}
       </button>
     </div>
 
@@ -30,12 +32,11 @@
             class="border p-2 mb-3 w-full rounded"
             required
           />
-          <input
+          <textarea
             v-model="form.description"
-            type="text"
             placeholder="Description"
-            class="border p-2 mb-3 w-full rounded"
-          />
+            class="border p-2 mb-3 w-full rounded resize-y min-h-[80px]"
+          ></textarea>
 
           <div class="flex justify-end">
             <button
@@ -43,13 +44,14 @@
               @click="closeModal"
               class="px-4 py-2 border rounded mr-2"
             >
-              Cancel
+              {{ $t("button.Cancel") }}
             </button>
             <button
               type="submit"
-              class="bg-[#B90C0E] text-white px-4 py-2 rounded"
+              class="px-5 py-2 rounded bg-[#111827] text-white hover:bg-gray-900"
             >
-              {{ editing ? "Update" : "Create" }}
+              <!-- {{ editing ? "Update" : "Create" }} -->
+              {{ $t("button.create_assessment") }}
             </button>
           </div>
         </form>
@@ -70,20 +72,27 @@
           <thead class="bg-[#111827] text-white">
             <tr>
               <th class="px-4 py-2 text-left text-sm font-medium">#</th>
-              <th class="px-4 py-2 text-left text-sm font-medium">Category</th>
+              <th class="px-4 py-2 text-left text-sm font-medium">
+                {{ $t("title.Assessment") }}
+              </th>
+              <!-- <th class="px-4 py-2 text-left text-sm font-medium">
+                {{ $t("title.description") }}
+              </th> -->
               <th
                 class="px-4 py-2 text-right text-sm font-medium"
                 style="width: 550px"
               >
-                Created At
+                {{ $t("title.created_at") }}
               </th>
               <th
                 class="px-4 py-2 text-right text-sm font-medium"
                 style="width: 200px"
               >
-                Updated At
+                {{ $t("title.updated_at") }}
               </th>
-              <th class="px-4 py-2 text-right text-sm font-medium">Actions</th>
+              <th class="px-4 py-2 text-right text-sm font-medium">
+                {{ $t("title.Actions") }}
+              </th>
             </tr>
           </thead>
 
@@ -97,6 +106,9 @@
               <td class="px-4 py-2 text-sm font-semibold text-gray-600">
                 {{ a.name }}
               </td>
+              <!-- <td class="px-4 py-2 text-sm font-semibold text-gray-600">
+                {{ a.description }}
+              </td> -->
               <!-- Right-aligned Created At -->
               <td class="px-4 py-2 text-sm text-right text-gray-600">
                 {{ formatDate(a.created_at) }}
@@ -108,45 +120,18 @@
               <td class="px-4 py-2 text-right">
                 <button
                   @click="openEditModal(a)"
-                  class="text-sm text-blue-600 hover:text-blue-800 mr-3"
+                  class="text-blue-600 hover:text-blue-800 mr-2"
                 >
-                  <!-- Edit Icon (Modern Pencil) -->
-                  <svg
-                    class="h-6 w-6"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M4 6v12a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2zm8 8h4m-2-2v4m-4-4v4"
-                    />
-                  </svg>
+                  <SquarePen width="19" height="19" />
                 </button>
+
                 <button
                   @click="remove(a.id)"
-                  class="text-sm text-red-600 hover:text-red-800"
+                  class="text-red-600 hover:text-red-800"
+                  title="Delete"
                 >
-                  <!-- Delete Icon (Trash Can) -->
-                  <svg
-                    class="h-6 w-6"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M19 7l-1 14H6L5 7m6 0V3m0 4h-2m2 0h2"
-                    />
-                  </svg>
+                  <Icon icon="mdi:trash-can" class="w-5 h-5" />
                 </button>
-                <!-- {{ $t("welcome") }} -->
               </td>
             </tr>
           </tbody>
@@ -160,6 +145,8 @@
 import { ref, onMounted } from "vue";
 import { useAssessmentStore } from "../../stores/assessment";
 import { useI18n } from "vue-i18n";
+import { Icon } from "@iconify/vue";
+import { SquarePen } from "lucide-vue-next";
 
 const assessmentStore = useAssessmentStore();
 const { t } = useI18n();

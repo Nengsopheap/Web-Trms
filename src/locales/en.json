@@ -22,14 +22,23 @@
     "level1": "Level 1",
     "level2": "Level 2",
     "level3": "Level 3",
-    "enter_option": "Enter Options"
+    "enter_option": "Enter Options",
+    "question": "Question",
+    "Assessment": "Assessment",
+    "Category": "Category",
+    "description": "Description",
+    "created_at": "Created At",
+    "updated_at": "Updated At",
+    "dashboard": "Dashboard",
+    "user_assessment_history": "User Assessment History"
   },
 
   "button": {
     "create_question": "Add New",
     "add_option": "Add Option",
     "Cancel": "Cancel",
-    "Submit": "Submit"
+    "Submit": "Submit",
+    "create_assessment": "+ Add New"
   },
 
   "validation": {
