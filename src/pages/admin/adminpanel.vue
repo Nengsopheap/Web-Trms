@@ -100,6 +100,8 @@ import {
   AlignJustify,
   CircleHelp,
 } from "lucide-vue-next";
+import axios from "axios"; 
+import { toast } from "vue3-toastify"; 
 
 export default {
   name: "adminPanel",
@@ -114,12 +116,45 @@ export default {
     const { t } = useI18n();
     const router = useRouter();
 
-    const logout = () => {
-      localStorage.removeItem("token");
-      router.push("/");
+    const logout = async () => {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        toast.warning("No token found.");
+        return;
+      }
+
+      try {
+        await axios.post(
+          "http://localhost:3000/auth/logout",
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        localStorage.removeItem("token");
+        localStorage.removeItem("user_id");
+
+        toast.success("Logged out successfully", {
+          autoClose: 2000,
+          position: "top-right",
+        });
+
+        router.push("/");
+      } catch (err) {
+        toast.error("Logout failed", {
+          autoClose: 3000,
+          position: "top-right",
+        });
+        console.error("Logout error:", err);
+      }
     };
 
     return { logout, t };
   },
 };
 </script>
+
