@@ -226,17 +226,34 @@
         <table class="min-w-full divide-y divide-gray-200">
           <thead class="bg-[#111827] text-white">
             <tr>
-              <th class="px-4 py-2 text-left text-sm font-medium">#</th>
-              <th class="px-4 py-2 text-left text-sm font-medium">
+              <th
+                class="px-4 py-2 text-left text-sm font-medium"
+                style="width: 3%"
+              >
+                #
+              </th>
+              <th
+                class="px-4 py-2 text-left text-sm font-medium"
+                style="width: 60%"
+              >
                 {{ $t("title.Questions") }}
               </th>
-              <th class="px-4 py-2 text-left text-sm font-medium">
+              <th
+                class="px-4 py-2 text-center text-sm font-medium"
+                style="width: 10%"
+              >
                 {{ $t("title.Type") }}
               </th>
-              <th class="px-4 py-2 text-left text-sm font-medium">
+              <th
+                class="px-4 py-2 text-center text-sm font-medium"
+                style="width: 10%"
+              >
                 {{ $t("title.Points") }}
               </th>
-              <th class="px-4 py-2 text-left text-sm font-medium">
+              <th
+                class="px-4 py-2 text-center text-sm font-medium"
+                style="width: 10%"
+              >
                 {{ $t("title.Quiz_Categoty") }}
               </th>
               <th class="px-4 py-2 text-right text-sm font-medium">
@@ -259,7 +276,7 @@
                 <td class="px-4 py-2 text-sm text-gray-900">
                   {{ question.question_text }}
                 </td>
-                <td class="px-4 py-2 text-sm text-gray-700">
+                <td class="px-4 py-2 text-sm text-gray-700 text-center">
                   {{
                     question.type ||
                     (question.is_yes_no
@@ -272,7 +289,7 @@
                 <td class="px-4 py-2 text-sm text-gray-700 text-center">
                   {{ question.points }}
                 </td>
-                <td class="px-4 py-2 text-sm text-gray-700">
+                <td class="px-4 py-2 text-sm text-gray-700 text-center">
                   {{ question.assessment?.name || "N/A" }}
                 </td>
                 <td class="px-4 py-2 text-sm text-right">
@@ -403,11 +420,11 @@ import { useQuestionStore } from "../../stores/question";
 import { useAssessmentStore } from "../../stores/assessment";
 import { toast } from "vue3-toastify";
 import { useI18n } from "vue-i18n";
-import { Icon } from "@iconify/vue"; 
+import { Icon } from "@iconify/vue";
 
 export default {
   components: {
-    Icon, 
+    Icon,
   },
   setup() {
     const { t } = useI18n();
