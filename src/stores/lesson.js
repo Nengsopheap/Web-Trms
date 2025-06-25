@@ -22,7 +22,7 @@ export const useLessonStore = defineStore('lesson', {
         this.lessons = await fetchLessonsByAssessmentId(assessmentId);
       } catch (e) {
         this.error = e;
-        console.error("Error in loadLessonsByAssessmentId:", e);
+        // console.error("Error in loadLessonsByAssessmentId:", e);
       } finally {
         this.loading = false;
       }

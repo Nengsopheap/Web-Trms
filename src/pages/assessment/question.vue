@@ -412,88 +412,69 @@ const previousQuestion = () => {
 };
 
 const submitQuiz = async () => {
-  let totalPoints = 0;
+  const userId = localStorage.getItem("user_id");
+  const answersPayload = [];
+
   const totalQuestions = filteredQuestions.value.length;
-  const userId = localStorage.getItem("user_id"); // 👤 Get user ID
-  const quizHistory = []; // 📝 Store user's quiz history
+  let totalPoints = 0;
+  const quizHistory = [];
 
   for (let i = 0; i < totalQuestions; i++) {
     const question = filteredQuestions.value[i];
     const selected = selectedOptions[i];
     const selectedOptionIds = Array.isArray(selected) ? selected : [selected];
 
-    if (!question || !question.options) {
-      console.warn(`Question at index ${i} is missing or has no options`);
-      continue;
-    }
+    if (!question || !question.options) continue;
 
-    const correctOptionIds = question.options
-      .filter((option) => option.is_correct)
-      .map((option) => option.id);
+    answersPayload.push({
+      question_id: question.id,
+      option_ids: selectedOptionIds,
+      user_id: parseInt(userId),
+    });
+
+    const correctOptionIds = question.options.filter(o => o.is_correct).map(o => o.id);
 
     let points = 0;
-
     if (correctOptionIds.length > 1) {
-      const correctCount = selectedOptionIds.filter((id) =>
-        correctOptionIds.includes(id)
-      ).length;
-
-      const wrongCount = selectedOptionIds.filter(
-        (id) => !correctOptionIds.includes(id)
-      ).length;
-
+      const correctCount = selectedOptionIds.filter(id => correctOptionIds.includes(id)).length;
+      const wrongCount = selectedOptionIds.filter(id => !correctOptionIds.includes(id)).length;
       const pointsPerCorrect = 1 / correctOptionIds.length;
       const pointsPerWrong = -1 / selectedOptionIds.length;
-
-      points = correctCount * pointsPerCorrect + wrongCount * pointsPerWrong;
-      points = Math.max(0, points);
+      points = Math.max(0, correctCount * pointsPerCorrect + wrongCount * pointsPerWrong);
     } else {
       points = correctOptionIds.includes(selectedOptionIds[0]) ? 1 : 0;
     }
 
     totalPoints += points;
 
-    // 👇 Save this question's details to history
     quizHistory.push({
       question_text: question.question_text,
       options: question.options,
-      selectedOptionIds: selectedOptionIds,
-      correctOptionIds: correctOptionIds,
-      isCorrect:
-        selectedOptionIds.length === correctOptionIds.length &&
-        selectedOptionIds.every((id) => correctOptionIds.includes(id)),
+      selectedOptionIds,
+      correctOptionIds,
+      isCorrect: selectedOptionIds.length === correctOptionIds.length &&
+        selectedOptionIds.every(id => correctOptionIds.includes(id)),
     });
-
-    // ✅ Submit the user's answer to the backend (optional)
-    const answerData = {
-      question_id: question.id,
-      option_ids: selectedOptionIds,
-      user_id: userId,
-    };
-
-    try {
-      await questionStore.submitUserAnswer(answerData);
-    } catch (error) {
-      console.error("Error submitting answer:", error);
-    }
   }
 
-  // 🎯 Final Score
-  const totalPercentage = (totalPoints / totalQuestions) * 100;
-  score.value = totalPercentage.toFixed(2);
+  try {
+    const response = await questionStore.submitUserAnswersBatch(answersPayload);
+    console.log("Batch submission response:", response);
 
-  // 💾 Store history in localStorage
-  localStorage.setItem("quiz_history", JSON.stringify(quizHistory));
+    score.value = response.percentage.toFixed(2);
+    localStorage.setItem("quiz_history", JSON.stringify(quizHistory));
 
-  // 🔁 Redirect to results page
-  router.push({
-    name: "assessmentresult",
-    query: { score: score.value },
-  });
+    router.push({
+      name: "assessmentresult",
+      query: { score: score.value },
+    });
 
-  // ✅ Close the popup if needed
-  closePopup();
+    closePopup();
+  } catch (error) {
+    console.error("Batch submission failed:", error);
+  }
 };
+
 </script>
 
 <style scoped>

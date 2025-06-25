@@ -1,11 +1,9 @@
-// api/question.js
 import axios from "axios";
 
 const BASE_URL = "http://localhost:3000";
 
 export async function getAllquestion() {
   const response = await axios.get(`${BASE_URL}/questions`);
-  console.log("API response:", response);
   return response.data;
 }
 
@@ -19,24 +17,23 @@ export async function createQuestion(questionData) {
   return response.data;
 }
 
-// Update Question API call
 export const updateQuestion = async (id, updatedData) => {
-  return await axios.post(`/questions/${id}`, updatedData);
+  return await axios.post(`${BASE_URL}/questions/${id}`, updatedData);
 };
 
-// Delete Question API call
 export async function deleteQuestion(id) {
   return await axios.delete(`${BASE_URL}/questions/${id}`);
 };
 
-export async function submitAnswer(answerData) {
+// ✅ Submit batch answers
+export async function submitAnswer(answersArray) {
   try {
-    const response = await axios.post(
-      "//localhost:3000/questions/submit-answer",
-      answerData
-    );
-    return response.data; // This returns the data from the backend
+    const response = await axios.post(`${BASE_URL}/questions/submit-answer`, answersArray);
+    return response.data;
   } catch (error) {
-    throw new Error("Error submitting answer: " + error.message);
+    throw new Error("Error submitting batch answers: " + error.message);
   }
+
+
 }
+
