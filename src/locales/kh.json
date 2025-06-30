@@ -33,7 +33,13 @@
     "dashboard": "ផ្ទាំងគ្រប់គ្រង",
     "user_assessment_history": "ប្រវត្តិប្រភេទសំណួររបស់អ្នកប្រើប្រាស់",
     "user_score": "ពិន្ទុរបស់អ្នកប្រើប្រាស់",
-    "admin_dashboard": "ផ្ទាំងគ្រប់គ្រងរបស់អ្នកគ្រប់គ្រង"
+    "admin_dashboard": "ផ្ទាំងគ្រប់គ្រងរបស់អ្នកគ្រប់គ្រង",
+    "username": "ឈ្មោះអ្នកប្រើប្រាស់",
+    "total_quizs": "សរុបប្រភេទសំណួរ",
+    "Correct_Answers": "ចម្លើយត្រឹមត្រូវ",
+    "Wrong_Answers": "ចម្លើយខុស",
+    "percentage": "ភាគរយ",
+    "submitted_at": "បានដាក់ស្នើនៅ"
   },
 
   "button": {
@@ -41,7 +47,8 @@
     "add_option": "បន្ថែមជម្រើស",
     "Cancel": "បោះបង់",
     "Submit": "ដាក់ស្នើ",
-    "create_assessment": "+ បង្កើតប្រភេទសំណួរ"
+    "create_assessment": "+ បង្កើតប្រភេទសំណួរ",
+    "Page": "ទំព័រ"
   },
 
   "validation": {

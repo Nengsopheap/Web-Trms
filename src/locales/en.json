@@ -32,7 +32,13 @@
     "dashboard": "Dashboard",
     "user_assessment_history": "User Assessment History",
     "user_score": "User Score",
-    "admin_dashboard": "Admin Dashboard"
+    "admin_dashboard": "Admin Dashboard",
+    "username": "Username",
+    "total_quizs": "Total Quizzes",
+    "Correct_Answers": "Correct Answers",
+    "Wrong_Answers": "Wrong Answers",
+    "percentage": "Percentage",
+    "submitted_at": "Submitted At"
   },
 
   "button": {
@@ -40,7 +46,8 @@
     "add_option": "Add Option",
     "Cancel": "Cancel",
     "Submit": "Submit",
-    "create_assessment": "+ Add New"
+    "create_assessment": "+ Add New",
+    "Page": "Page"
   },
 
   "validation": {

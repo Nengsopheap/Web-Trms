@@ -418,7 +418,6 @@ const submitQuiz = async () => {
   const totalQuestions = filteredQuestions.value.length;
   let totalPoints = 0;
   const quizHistory = [];
-
   for (let i = 0; i < totalQuestions; i++) {
     const question = filteredQuestions.value[i];
     const selected = selectedOptions[i];
@@ -432,15 +431,24 @@ const submitQuiz = async () => {
       user_id: parseInt(userId),
     });
 
-    const correctOptionIds = question.options.filter(o => o.is_correct).map(o => o.id);
+    const correctOptionIds = question.options
+      .filter((o) => o.is_correct)
+      .map((o) => o.id);
 
     let points = 0;
     if (correctOptionIds.length > 1) {
-      const correctCount = selectedOptionIds.filter(id => correctOptionIds.includes(id)).length;
-      const wrongCount = selectedOptionIds.filter(id => !correctOptionIds.includes(id)).length;
+      const correctCount = selectedOptionIds.filter((id) =>
+        correctOptionIds.includes(id)
+      ).length;
+      const wrongCount = selectedOptionIds.filter(
+        (id) => !correctOptionIds.includes(id)
+      ).length;
       const pointsPerCorrect = 1 / correctOptionIds.length;
       const pointsPerWrong = -1 / selectedOptionIds.length;
-      points = Math.max(0, correctCount * pointsPerCorrect + wrongCount * pointsPerWrong);
+      points = Math.max(
+        0,
+        correctCount * pointsPerCorrect + wrongCount * pointsPerWrong
+      );
     } else {
       points = correctOptionIds.includes(selectedOptionIds[0]) ? 1 : 0;
     }
@@ -452,8 +460,9 @@ const submitQuiz = async () => {
       options: question.options,
       selectedOptionIds,
       correctOptionIds,
-      isCorrect: selectedOptionIds.length === correctOptionIds.length &&
-        selectedOptionIds.every(id => correctOptionIds.includes(id)),
+      isCorrect:
+        selectedOptionIds.length === correctOptionIds.length &&
+        selectedOptionIds.every((id) => correctOptionIds.includes(id)),
     });
   }
 
@@ -462,8 +471,25 @@ const submitQuiz = async () => {
     console.log("Batch submission response:", response);
 
     score.value = response.percentage.toFixed(2);
+
+    // Save quiz history
     localStorage.setItem("quiz_history", JSON.stringify(quizHistory));
 
+    // Save full result data, including recommendation
+    localStorage.setItem(
+      "quiz_result_data",
+      JSON.stringify({
+        user_id: response.user_id,
+        score: response.score,
+        correctAnswers: response.correctAnswers,
+        wrongAnswers: response.wrongAnswers,
+        percentage: response.percentage,
+        totalQuizzes: response.totalQuizzes,
+        recommendedCourse: response.recommendedCourse,
+      })
+    );
+
+    // Navigate to result page with score in query
     router.push({
       name: "assessmentresult",
       query: { score: score.value },
@@ -474,7 +500,6 @@ const submitQuiz = async () => {
     console.error("Batch submission failed:", error);
   }
 };
-
 </script>
 
 <style scoped>

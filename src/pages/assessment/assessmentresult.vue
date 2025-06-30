@@ -3,21 +3,21 @@
 
   <div class="container">
     <div class="flex flex-col bg-white">
-      <div class="flex flex-col gap-5 items-start" style="margin-left: 100px">
+      <!-- Header Text -->
+      <div class="flex flex-col gap-5 items-start ml-24">
         <div class="text-3xl mt-3 text-black/80 font-bold">ពិន្ទុការប្រលង</div>
-        <div
-          class="text-xs text-black/80 font-bold"
-          style="width: 400px; line-height: 20px"
-        >
+        <div class="text-xs text-black/80 font-bold w-[400px] leading-5">
           ប្រព័ន្ធវាយតម្លៃសិស្សនឹងជួយអ្នកក្នុងការរៀនសូត្របានប្រសើរជាងមុនដោយផ្តល់នូវព័ត៌មានដ៏សំខាន់។
         </div>
       </div>
 
+      <!-- Main Box -->
       <div class="flex justify-center items-center">
         <div
           class="flex flex-row justify-center items-center rounded-xl shadow-lg bg-white mt-6 mb-6 border"
           style="width: 1110px"
         >
+          <!-- Left Side Info -->
           <div class="px-8 py-10">
             <p class="font-bold text-[25px] w-[300px]">
               🏆 ចំណាត់ថ្នាក់របស់អ្នក នៃការវាយតម្លៃ
@@ -41,7 +41,7 @@
             </button>
           </div>
 
-          <!-- Score Indicator -->
+          <!-- Score Circle -->
           <div class="flex flex-col items-center justify-center px-6 py-12">
             <div class="relative w-48 aspect-square">
               <svg
@@ -94,7 +94,31 @@
         </div>
       </div>
 
-      <!-- Quiz History -->
+      <!-- ✅ Recommended Course -->
+      <div
+        v-if="recommendedCourse"
+        class="max-w-xl mx-auto mt-6 mb-10 p-6 bg-indigo-50 rounded-lg border border-indigo-200 shadow"
+      >
+        <h3 class="text-lg font-bold text-indigo-800 mb-2">
+          📚 Course Recommendation
+        </h3>
+        <p class="text-indigo-700 font-semibold text-base">
+          {{ recommendedCourse.title }}
+        </p>
+        <p class="text-sm text-indigo-600 mt-2">
+          {{ recommendedCourse.description }}
+        </p>
+        <div class="mt-4">
+          <!-- <router-link
+            :to="{ name: 'coursedetail', params: { id: recommendedCourse.id } }"
+            class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+          >
+            View Course
+          </router-link> -->
+        </div>
+      </div>
+
+      <!-- Quiz History Section -->
       <div v-if="showHistory" class="mt-8 px-4 sm:px-10">
         <h2 class="text-2xl font-bold text-gray-800 mb-6">📝 Quiz Review</h2>
 
@@ -126,8 +150,6 @@
               }"
             >
               <span>{{ option.option_text }}</span>
-
-              <!-- Tags -->
               <div class="flex gap-2 text-xs font-semibold">
                 <span
                   v-if="item.correctOptionIds.includes(option.id)"
@@ -147,23 +169,42 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from "vue";
+import { useRoute } from "vue-router";
 import Header from "../../components/Header.vue";
 import Footer from "../../components/footer.vue";
-import { useRoute } from "vue-router";
-import { ref } from "vue";
 
 const route = useRoute();
 const score = parseFloat(route.query.score || 0);
+const showHistory = ref(false);
 
-// Load quiz history from localStorage
+// Load quiz history
 const quizHistory = JSON.parse(localStorage.getItem("quiz_history") || "[]");
 
-// State for toggling quiz history
-const showHistory = ref(false);
+// Load full result data (score, recommendation, etc.)
+const recommendedCourse = ref(null);
+
+try {
+  const resultData = JSON.parse(
+    localStorage.getItem("quiz_result_data") || "{}"
+  );
+  if (resultData.recommendedCourse) {
+    recommendedCourse.value = resultData.recommendedCourse;
+  }
+} catch (err) {
+  console.warn("Failed to parse result data", err);
+}
+
+// onMounted(() => {
+
+//   setTimeout(() => {
+//     localStorage.removeItem("quiz_result_data");
+//     localStorage.removeItem("quiz_history");
+//   }, 2000);
+// });
 </script>
 
 <style scoped>
-/* Add any additional styling you may need here */
 .custom-left::after {
   content: "";
   position: absolute;
@@ -174,7 +215,7 @@ const showHistory = ref(false);
   height: 0;
   border-top: 20px solid transparent;
   border-bottom: 20px solid transparent;
-  border-left: 20px solid #1e1b4b; /* Indigo-900 */
+  border-left: 20px solid #1e1b4b;
 }
 
 .custom-right::after {
@@ -187,6 +228,6 @@ const showHistory = ref(false);
   height: 0;
   border-top: 20px solid transparent;
   border-bottom: 20px solid transparent;
-  border-right: 20px solid #1e1b4b; /* Indigo-900 */
+  border-right: 20px solid #1e1b4b;
 }
 </style>
