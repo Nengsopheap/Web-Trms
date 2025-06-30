@@ -59,5 +59,19 @@
     "Points": "Points must be greater than 0",
     "Yes_or_No": "Please mark Yes or No as correct",
     "Create_successful": "Question created successfully"
-  }
+  },
+  "slides": [
+    {
+      "title": "Cybersecurity",
+      "description": "Cybersecurity is the practice of protecting systems, networks, and data from online threats. It plays a critical role in maintaining information security."
+    },
+    {
+      "title": "Artificial Intelligence (AI)",
+      "description": "AI enables machines to make decisions like humans. It is used in smart devices, automation, and predictive analytics."
+    },
+    {
+      "title": "Programming",
+      "description": "Programming is the process of writing code to instruct a computer or smart device to perform tasks. It is essential in IT and the digital world."
+    }
+  ]
 }

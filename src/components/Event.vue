@@ -11,19 +11,19 @@
       >
         <transition name="text-fancy" mode="out-in">
           <h1
-            :key="items[currentIndex].title"
+            :key="currentIndex"
             class="text-4xl md:text-5xl font-bold mb-6 text-gray-900"
           >
-            {{ items[currentIndex].title }}
+            {{ $t(`slides[${currentIndex}].title`) }}
           </h1>
         </transition>
 
         <transition name="text-fancy" mode="out-in">
           <p
-            :key="items[currentIndex].description"
+            :key="`desc-${currentIndex}`"
             class="text-gray-700 text-lg leading-relaxed"
           >
-            {{ items[currentIndex].description }}
+            {{ $t(`slides[${currentIndex}].description`) }}
           </p>
         </transition>
       </div>
@@ -32,8 +32,8 @@
       <div class="md:w-1/2 w-full relative">
         <transition name="image-fancy" mode="out-in">
           <img
-            :key="items[currentIndex].image"
-            :src="items[currentIndex].image"
+            :key="currentItem.image"
+            :src="currentItem.image"
             alt="Slide"
             class="w-full h-[300px] md:h-[400px] object-cover"
           />
@@ -62,35 +62,35 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, computed, onMounted, onUnmounted } from "vue";
+import { useI18n } from "vue-i18n";
+
 import aiImg from "../assets/image/AI.png";
 import cyberImg from "../assets/image/cyber2.jpg";
+import programImg from "../assets/image/Program.png";
 
-const items = [
-  {
-    title: "សន្តិសុខសាយបឺរ",
-    description:
-      "សន្តិសុខសាយបឺរគឺជាការអនុវត្តន៍ក្នុងការការពារប្រព័ន្ធ បណ្តាញ និងទិន្នន័យពីការគំរាមកំហែងតាមអ៊ីនធឺណិត។ វាជាផ្នែកសំខាន់ក្នុងការអភិរក្សសុវត្ថិភាពព័ត៌មាន។",
-    image: cyberImg,
-  },
-  {
-    title: "បញ្ញាសិប្បនិម្មិត (AI)",
-    description:
-      "បញ្ញាសិប្បនិម្មិត គឺជាបច្ចេកវិទ្យាដែលអាចអោយម៉ាស៊ីនសម្រេចចិត្ត ដូចមនុស្ស។ វាត្រូវបានប្រើនៅក្នុងការបញ្ជូនដំណឹង ឧបករណ៍ឆ្លាតវៃ និងការព្យាករណ៍។",
-    image: aiImg,
-  },
-];
+const { t } = useI18n();
 
+const images = [cyberImg, aiImg, programImg];
 const currentIndex = ref(0);
-let intervalId = null;
+
+const currentItem = computed(() => {
+  const slide = t(`slides[${currentIndex.value}]`, {}, { returnObjects: true });
+  return {
+    ...slide,
+    image: images[currentIndex.value],
+  };
+});
 
 const next = () => {
-  currentIndex.value = (currentIndex.value + 1) % items.length;
+  currentIndex.value = (currentIndex.value + 1) % images.length;
 };
 
 const prev = () => {
-  currentIndex.value = (currentIndex.value - 1 + items.length) % items.length;
+  currentIndex.value = (currentIndex.value - 1 + images.length) % images.length;
 };
+
+let intervalId = null;
 
 onMounted(() => {
   intervalId = setInterval(next, 3000);
@@ -102,7 +102,7 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-/* Text fancy animation */
+/* Text animation */
 .text-fancy-enter-active,
 .text-fancy-leave-active {
   transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
@@ -116,7 +116,7 @@ onUnmounted(() => {
   transform: translateY(-30px) scale(0.95);
 }
 
-/* Image fancy animation */
+/* Image animation */
 .image-fancy-enter-active,
 .image-fancy-leave-active {
   transition: all 0.7s ease-in-out;
