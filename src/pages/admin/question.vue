@@ -268,7 +268,7 @@
               </td>
             </tr>
             <template
-              v-for="(question, index) in filteredQuestions"
+              v-for="(question, index) in paginatedQuestions"
               :key="question.id"
             >
               <tr class="hover:bg-gray-50">
@@ -334,6 +334,27 @@
           </tbody>
         </table>
       </div>
+    </div>
+    <div class="flex items-center justify-center mt-4 gap-4">
+      <button
+        @click="prevPage"
+        :disabled="currentPage === 1"
+        class="px-4 py-2 rounded-md text-gray-700 disabled:opacity-50"
+      >
+        <ChevronLeft />
+      </button>
+
+      <span class="text-sm text-gray-600">
+        {{ $t("button.Page") }} {{ currentPage }} of {{ totalPages }}
+      </span>
+
+      <button
+        @click="nextPage"
+        :disabled="currentPage === totalPages"
+        class="px-4 py-2 rounded-md text-gray-700 disabled:opacity-50"
+      >
+        <ChevronRight />
+      </button>
     </div>
 
     <!-- View Question Modal -->
@@ -421,10 +442,13 @@ import { useAssessmentStore } from "../../stores/assessment";
 import { toast } from "vue3-toastify";
 import { useI18n } from "vue-i18n";
 import { Icon } from "@iconify/vue";
+import { ChevronLeft, ChevronRight } from "lucide-vue-next";
 
 export default {
   components: {
     Icon,
+    ChevronRight,
+    ChevronLeft,
   },
   setup() {
     const { t } = useI18n();
@@ -443,22 +467,42 @@ export default {
       type: "multiple_choice",
     });
 
-    // ✅ Use computed so assessments stays reactive
     const assessments = computed(() => assessmentStore.assessments);
-
     const questions = computed(() => questionStore.submittedAnswers);
 
     const filteredQuestions = computed(() => {
-      // If data not yet loaded, don't return empty
       if (!questions.value || questions.value.length === 0) return [];
-
-      if (!selectedAssessmentId.value) {
-        return questions.value;
-      }
-
+      if (!selectedAssessmentId.value) return questions.value;
       return questions.value.filter(
         (q) => q.assessment?.id === selectedAssessmentId.value
       );
+    });
+
+    // ✅ PAGINATION
+    const currentPage = ref(1);
+    const perPage = ref(10);
+
+    const paginatedQuestions = computed(() => {
+      const start = (currentPage.value - 1) * perPage.value;
+      const end = start + perPage.value;
+      return filteredQuestions.value.slice(start, end);
+    });
+
+    const totalPages = computed(() => {
+      return Math.ceil(filteredQuestions.value.length / perPage.value);
+    });
+
+    const nextPage = () => {
+      if (currentPage.value < totalPages.value) currentPage.value++;
+    };
+
+    const prevPage = () => {
+      if (currentPage.value > 1) currentPage.value--;
+    };
+
+    // Reset to page 1 on filter
+    watch(selectedAssessmentId, () => {
+      currentPage.value = 1;
     });
 
     const resetForm = () => {
@@ -480,7 +524,7 @@ export default {
         });
         return;
       }
-      // Basic validation
+
       if (!newQuestion.value.points || newQuestion.value.points <= 0) {
         toast.error(t("validation.Points"), {
           autoClose: 3000,
@@ -489,7 +533,6 @@ export default {
         return;
       }
 
-      // Validate options
       if (
         ["multiple_choice", "single_choice"].includes(newQuestion.value.type) &&
         !newQuestion.value.options.some((opt) => opt.is_correct)
@@ -498,7 +541,6 @@ export default {
           autoClose: 3000,
           position: "top-right",
         });
-
         return;
       }
 
@@ -513,12 +555,10 @@ export default {
         return;
       }
 
-      // Flags for backend
       newQuestion.value.is_multiple_choice =
         newQuestion.value.type === "multiple_choice";
       newQuestion.value.is_yes_no = newQuestion.value.type === "yes_no";
 
-      // Submit to store
       const success = await questionStore.addQuestion(newQuestion.value);
       if (success) {
         await questionStore.loadAllSubmittedAnswers();
@@ -558,15 +598,16 @@ export default {
         });
       }
     };
+
     const closeModal = () => {
       resetForm();
       showModal.value = false;
-      // Do NOT reset form here
     };
 
     const addOption = () => {
       newQuestion.value.options.push({ option_text: "", is_correct: false });
     };
+
     const removeOption = (index) => {
       if (newQuestion.value.options.length > 1) {
         newQuestion.value.options.splice(index, 1);
@@ -581,14 +622,13 @@ export default {
         newQuestion.value.options[index === 0 ? 1 : 0].is_correct = false;
       }
     };
+
     function toggleCorrectOption(index, checked) {
       if (newQuestion.value.type === "single_choice") {
-        // For single choice, only one can be true
         newQuestion.value.options.forEach((opt, i) => {
           opt.is_correct = i === index ? checked : false;
         });
       } else {
-        // For multiple choice, toggle only this option
         newQuestion.value.options[index].is_correct = checked;
       }
     }
@@ -620,18 +660,20 @@ export default {
       await assessmentStore.loadAssessments();
       await questionStore.loadAllSubmittedAnswers();
 
-      // Debug output
-      console.log(
-        "Assessments List:",
-        JSON.stringify(assessmentStore.assessments, null, 2)
-      );
-      console.log(
-        "Questions List:",
-        JSON.stringify(questionStore.submittedAnswers, null, 2)
-      );
+      // console.log(
+      //   "Assessments List:",
+      //   JSON.stringify(assessmentStore.assessments, null, 2)
+      // );
+      // console.log(
+      //   "Questions List:",
+      //   JSON.stringify(questionStore.submittedAnswers, null, 2)
+      // );
 
-      if (assessments.value.length > 0) {
-        selectedAssessment.value = assessments.value[0];
+      const savedAssessmentId = localStorage.getItem("selectedAssessmentId");
+      if (savedAssessmentId) {
+        selectedAssessmentId.value = isNaN(savedAssessmentId)
+          ? savedAssessmentId
+          : parseInt(savedAssessmentId);
       }
     });
 
@@ -658,6 +700,14 @@ export default {
       viewQuestion,
       openViewModal,
       closeViewModal,
+
+      // Pagination
+      currentPage,
+      perPage,
+      totalPages,
+      nextPage,
+      prevPage,
+      paginatedQuestions,
     };
   },
 };

@@ -2,7 +2,7 @@
   "welcome": "Welcome!",
   "Home": "Home",
   "Law_and_Regulation": "Law and Regulation",
-  "Resources":"Resources",
+  "Resources": "Resources",
   "About": "About TRM",
   "Others": "Others",
   "title": {
@@ -38,7 +38,9 @@
     "Correct_Answers": "Correct Answers",
     "Wrong_Answers": "Wrong Answers",
     "percentage": "Percentage",
-    "submitted_at": "Submitted At"
+    "submitted_at": "Submitted At",
+    "No_data_found": "No data found",
+    "history_user": "User History"
   },
 
   "button": {
@@ -47,7 +49,8 @@
     "Cancel": "Cancel",
     "Submit": "Submit",
     "create_assessment": "+ Add New",
-    "Page": "Page"
+    "Page": "Page",
+    "search": "Search......"
   },
 
   "validation": {

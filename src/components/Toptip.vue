@@ -9,7 +9,7 @@
             @click="goToLearntips(store.allToptips[0]?.id)"
           >
             <img
-              src="/src/assets/image/Cyber.jpg"
+              src="/src/assets/image/AI.png"
               class="w-full h-full object-cover"
             />
             <div
@@ -37,7 +37,7 @@
               @click="goToLearntips(store.allToptips[1]?.id)"
             >
               <img
-                src="/src/assets/image/Cyber.jpg"
+                src="/src/assets/image/AI.png"
                 class="w-full h-full object-cover"
               />
               <div
@@ -62,7 +62,7 @@
               @click="goToLearntips(store.allToptips[2]?.id)"
             >
               <img
-                src="/src/assets/image/Cyber.jpg"
+                src="/src/assets/image/AI.png"
                 class="w-full h-full object-cover"
               />
               <div
@@ -87,7 +87,7 @@
             @click="goToLearntips(store.allToptips[3]?.id)"
           >
             <img
-              src="/src/assets/image/Cyber.jpg"
+              src="/src/assets/image/AI.png"
               class="w-full h-full object-cover"
             />
             <div
@@ -117,7 +117,7 @@
               @click="goToLearntips(store.allToptips[4]?.id)"
             >
               <img
-                src="/src/assets/image/Cyber.jpg"
+                src="/src/assets/image/AI.png"
                 class="w-full h-full object-cover"
               />
               <div
@@ -142,7 +142,7 @@
               @click="goToLearntips(store.allToptips[5]?.id)"
             >
               <img
-                src="/src/assets/image/Cyber.jpg"
+                src="/src/assets/image/AI.png"
                 class="w-full h-full object-cover"
               />
               <div
@@ -169,7 +169,7 @@
             @click="goToLearntips(store.allToptips[6]?.id)"
           >
             <img
-              src="/src/assets/image/Cyber.jpg"
+              src="/src/assets/image/AI.png"
               class="w-full h-full object-cover"
             />
             <div
