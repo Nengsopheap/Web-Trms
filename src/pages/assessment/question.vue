@@ -44,7 +44,7 @@
               </div>
             </div>
             <div class="text-gray-600 font-medium mb-4 ml-5">
-              Test your knowledge about best practices.
+              {{$t("title.knowledge")}}
             </div>
             <div
               class="flex flex-row justify-between items-center ml-5 mt-5"

@@ -40,7 +40,10 @@
     "percentage": "Percentage",
     "submitted_at": "Submitted At",
     "No_data_found": "No data found",
-    "history_user": "User History"
+    "history_user": "User History",
+    "knowledge": "Test your knowledge about best practices.",
+    "Best  Tips to Stay Safe Online.": "Best  Tips to Stay Safe Online.",
+    "user": "user"
   },
 
   "button": {

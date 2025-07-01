@@ -33,6 +33,17 @@
             {{ $t("title.dashboard") }}
           </span>
         </router-link>
+        <router-link
+          to="/admin/user"
+          class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition-all duration-200 ease-in-out"
+        >
+          <UserCheck class="h-5 w-5 flex-shrink-0" />
+          <span
+            class="ml-3 opacity-0 group-hover:opacity-100 transition-all duration-300 ease-in-out transform translate-x-[-10px] group-hover:translate-x-0 whitespace-nowrap"
+          >
+            {{ $t("title.user") }}
+          </span>
+        </router-link>
 
         <!-- Assessment -->
         <router-link
@@ -99,9 +110,10 @@ import {
   LayoutDashboard,
   AlignJustify,
   CircleHelp,
+  UserCheck,
 } from "lucide-vue-next";
-import axios from "axios"; 
-import { toast } from "vue3-toastify"; 
+import axios from "axios";
+import { toast } from "vue3-toastify";
 
 export default {
   name: "adminPanel",
@@ -111,6 +123,7 @@ export default {
     LayoutDashboard,
     AlignJustify,
     CircleHelp,
+    UserCheck,
   },
   setup() {
     const { t } = useI18n();
@@ -157,4 +170,3 @@ export default {
   },
 };
 </script>
-
