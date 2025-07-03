@@ -445,10 +445,8 @@ const submitQuiz = async () => {
       ).length;
       const pointsPerCorrect = 1 / correctOptionIds.length;
       const pointsPerWrong = -1 / selectedOptionIds.length;
-      points = Math.max(
-        0,
-        correctCount * pointsPerCorrect + wrongCount * pointsPerWrong
-      );
+   points = correctCount * pointsPerCorrect + wrongCount * pointsPerWrong;
+
     } else {
       points = correctOptionIds.includes(selectedOptionIds[0]) ? 1 : 0;
     }
