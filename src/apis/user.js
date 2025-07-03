@@ -21,5 +21,40 @@ export const fetchAllUserScores = async () => {
     console.error('Error fetching user scores:', error);
     throw error;
   }
+  
 };
+
+export const createUser = async (userData) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/users/create`, userData);
+    return response.data;
+  } catch (error) {
+    console.error('Error creating user:', error);
+    throw error;
+  }
+};
+
+export const deleteUser = async (id) => {
+  try {
+    const response = await axios.delete(`${API_BASE_URL}/users/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    throw error;
+  }
+};
+
+// api/userApi.js
+export const updateUser = async (id, userData) => {
+  try {
+    const response = await axios.put(`${API_BASE_URL}/users/${id}`, userData);
+    return response.data;
+  } catch (error) {
+    console.error('Error updating user:', error);
+    throw error;
+  }
+};
+
+
+
 
