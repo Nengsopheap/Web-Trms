@@ -30,7 +30,7 @@
         <!-- Quiz Card -->
         <div
           class="flex justify-center"
-          style="height: 250px; margin-top: -80px; width: 540px;"
+          style="height: 250px; margin-top: -80px; width: 540px"
         >
           <div
             class="bg-white p-6 rounded-lg shadow-lg border-t-4 border-[#31247d] w-full max-w-2xl"
@@ -44,7 +44,7 @@
               </div>
             </div>
             <div class="text-gray-600 font-medium mb-4 ml-5">
-              {{$t("title.knowledge")}}
+              {{ $t("title.knowledge") }}
             </div>
             <div
               class="flex flex-row justify-between items-center ml-5 mt-5"
@@ -215,7 +215,11 @@
                   filteredQuestions[currentQuestionIndex].is_yes_no
                     ? "Yes or No"
                     : filteredQuestions[currentQuestionIndex].is_multiple_choice
-                    ? "Multiple answers"
+                    ? "Multiple answers (select " +
+                      filteredQuestions[currentQuestionIndex].options.filter(
+                        (opt) => opt.is_correct
+                      ).length +
+                      " option)"
                     : "Single answer"
                 }}
               </span>
@@ -368,13 +372,12 @@ const handleCheckboxChange = (event, questionIndex, optionId) => {
   const selected = selectedOptions[questionIndex];
 
   if (event.target.checked) {
-    if (selected.length < correctOptionCount) {
+    if (!selected.includes(optionId)) {
+      if (selected.length >= correctOptionCount) {
+        // Remove the most recently selected option (LIFO)
+        selected.pop();
+      }
       selected.push(optionId);
-    } else {
-      event.target.checked = false; // Revert UI
-      // alert(
-      //   `You can only select ${correctOptionCount} option(s) for this question.`
-      // );
     }
   } else {
     const idx = selected.indexOf(optionId);
@@ -382,6 +385,9 @@ const handleCheckboxChange = (event, questionIndex, optionId) => {
       selected.splice(idx, 1);
     }
   }
+
+  // Trigger Vue reactivity
+  selectedOptions[questionIndex] = [...selected];
 };
 
 const startQuiz = () => {
@@ -397,6 +403,17 @@ const chooseDifficulty = (level) => {
 
 const closePopup = () => {
   showPopup.value = false;
+
+  for (const key in selectedOptions) {
+    if (Array.isArray(selectedOptions[key])) {
+      selectedOptions[key] = [];
+    } else {
+      selectedOptions[key] = null;
+    }
+  }
+
+  // Optionally reset current question index if you want to start fresh next time
+  currentQuestionIndex.value = 0;
 };
 
 const nextQuestion = () => {
@@ -445,8 +462,7 @@ const submitQuiz = async () => {
       ).length;
       const pointsPerCorrect = 1 / correctOptionIds.length;
       const pointsPerWrong = -1 / selectedOptionIds.length;
-   points = correctCount * pointsPerCorrect + wrongCount * pointsPerWrong;
-
+      points = correctCount * pointsPerCorrect + wrongCount * pointsPerWrong;
     } else {
       points = correctOptionIds.includes(selectedOptionIds[0]) ? 1 : 0;
     }

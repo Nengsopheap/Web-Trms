@@ -60,6 +60,12 @@
           ]"
         />
         <div class=""><LanguageSwitcher /></div>
+        <div
+          class="ml-4 px-3 py-1 border border-white rounded-md text-white font-semibold text-sm cursor-pointer hover:bg-white hover:text-[#31247d] transition-colors duration-200 ease-in-out"
+          @click="logout"
+        >
+          {{ $t("Logout") }}
+        </div>
       </div>
     </div>
   </div>
@@ -69,10 +75,58 @@
 import Dropdown from "../components/Dropdown.vue"; // Import the Dropdown component
 import LanguageSwitcher from "../components/LanguageSwitcher.vue"; // Import LanguageSwitcher component
 
+import axios from "axios";
+import { useRouter } from "vue-router";
+import { toast } from "vue3-toastify";
+import { useI18n } from "vue-i18n";
+
 export default {
   components: {
-    Dropdown, // Register the Dropdown component
+    Dropdown,
     LanguageSwitcher,
+  },
+  setup() {
+    const router = useRouter();
+    const { t } = useI18n();
+
+    const logout = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        toast.warning(t("No token found.") || "No token found.");
+        return;
+      }
+
+      try {
+        await axios.post(
+          "http://localhost:3000/auth/logout",
+          {},
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        localStorage.removeItem("token");
+        localStorage.removeItem("user_id");
+
+        toast.success(
+          t("Logged out successfully") || "Logged out successfully",
+          {
+            autoClose: 2000,
+            position: "top-right",
+          }
+        );
+
+        router.push("/");
+      } catch (error) {
+        toast.error(t("Logout failed") || "Logout failed", {
+          autoClose: 3000,
+          position: "top-right",
+        });
+        console.error("Logout error:", error);
+      }
+    };
+
+    return { logout, t };
   },
 };
 </script>
