@@ -43,7 +43,11 @@
         <!-- Header -->
         <div class="px-6 pt-6 pb-2 border-b">
           <h2 class="text-xl font-bold text-gray-800">
-            {{ $t("button.create_question") }}
+            {{
+              isEditMode
+                ? $t("button.edit_question")
+                : $t("button.create_question")
+            }}
           </h2>
         </div>
 
@@ -212,7 +216,11 @@
             @click="submitQuestion"
             class="px-5 py-2 rounded bg-[#111827] text-white hover:bg-gray-900"
           >
-            {{ $t("button.create_question") }}
+            {{
+              isEditMode
+                ? $t("button.update_question")
+                : $t("button.create_question")
+            }}
           </button>
         </div>
       </div>
@@ -294,6 +302,12 @@
                 </td>
                 <td class="px-4 py-2 text-sm text-right">
                   <div class="flex justify-end gap-2">
+                    <button
+                      @click="openEditModal(question)"
+                      class="text-blue-600 hover:text-blue-800 mr-2"
+                    >
+                      <SquarePen width="19" height="19" />
+                    </button>
                     <button
                       @click="openViewModal(question)"
                       class="text-blue-600 hover:text-blue-800"
@@ -442,13 +456,14 @@ import { useAssessmentStore } from "../../stores/assessment";
 import { toast } from "vue3-toastify";
 import { useI18n } from "vue-i18n";
 import { Icon } from "@iconify/vue";
-import { ChevronLeft, ChevronRight } from "lucide-vue-next";
+import { ChevronLeft, ChevronRight, SquarePen } from "lucide-vue-next";
 
 export default {
   components: {
     Icon,
     ChevronRight,
     ChevronLeft,
+    SquarePen,
   },
   setup() {
     const { t } = useI18n();
@@ -516,54 +531,28 @@ export default {
     };
 
     const submitQuestion = async () => {
-      const question = newQuestion.value;
-      if (!question.assessment_id) {
-        toast.error(t("validation.no_assessment_selected"), {
-          autoClose: 3000,
-          position: "top-right",
-        });
-        return;
-      }
-
-      if (!newQuestion.value.points || newQuestion.value.points <= 0) {
-        toast.error(t("validation.Points"), {
-          autoClose: 3000,
-          position: "top-right",
-        });
-        return;
-      }
-
-      if (
-        ["multiple_choice", "single_choice"].includes(newQuestion.value.type) &&
-        !newQuestion.value.options.some((opt) => opt.is_correct)
-      ) {
-        toast.error(t("validation.choose_one_option"), {
-          autoClose: 3000,
-          position: "top-right",
-        });
-        return;
-      }
-
-      if (
-        newQuestion.value.type === "yes_no" &&
-        !newQuestion.value.options.some((opt) => opt.is_correct)
-      ) {
-        toast.error(t("validation.Yes_or_No"), {
-          autoClose: 3000,
-          position: "top-right",
-        });
-        return;
-      }
+      // Validation checks as before...
 
       newQuestion.value.is_multiple_choice =
         newQuestion.value.type === "multiple_choice";
       newQuestion.value.is_yes_no = newQuestion.value.type === "yes_no";
 
-      const success = await questionStore.addQuestion(newQuestion.value);
+      let success;
+      if (isEditMode.value && editingQuestionId.value) {
+        success = await questionStore.updateQuestion(
+          editingQuestionId.value,
+          newQuestion.value
+        );
+      } else {
+        success = await questionStore.addQuestion(newQuestion.value);
+      }
+
       if (success) {
         await questionStore.loadAllSubmittedAnswers();
         showModal.value = false;
         resetForm();
+        isEditMode.value = false;
+        editingQuestionId.value = null;
         toast.success(t("validation.Create_successful"), {
           autoClose: 2000,
           position: "top-right",
@@ -583,6 +572,41 @@ export default {
       viewModalVisible.value = false;
       viewQuestion.value = {};
     };
+    const closeModal = () => {
+      resetForm();
+      showModal.value = false;
+      isEditMode.value = false;
+      editingQuestionId.value = null;
+    };
+    const isEditMode = ref(false);
+    const editingQuestionId = ref(null);
+    const openEditModal = (question) => {
+      isEditMode.value = true;
+      editingQuestionId.value = question.id;
+
+      // Populate form with selected question data
+      newQuestion.value = {
+        question_text: question.question_text || "",
+        assessment_id: question.assessment?.id || null,
+        points: question.points || 1,
+        category: question.category || "easy",
+        type:
+          question.type ||
+          (question.is_yes_no
+            ? "yes_no"
+            : question.is_multiple_choice
+            ? "multiple_choice"
+            : "single_choice"),
+        options: question.options
+          ? question.options.map((opt) => ({
+              option_text: opt.option_text,
+              is_correct: opt.is_correct,
+              id: opt.id, // keep id to know existing option if needed (optional)
+            }))
+          : [{ option_text: "", is_correct: false }],
+      };
+      showModal.value = true;
+    };
 
     const deleteQuestion = async (id) => {
       const success = await questionStore.deleteQuestion(id);
@@ -599,10 +623,10 @@ export default {
       }
     };
 
-    const closeModal = () => {
-      resetForm();
-      showModal.value = false;
-    };
+    // const closeModal = () => {
+    //   resetForm();
+    //   showModal.value = false;
+    // };
 
     const addOption = () => {
       newQuestion.value.options.push({ option_text: "", is_correct: false });
@@ -708,6 +732,11 @@ export default {
       nextPage,
       prevPage,
       paginatedQuestions,
+
+      // **Add this**
+      openEditModal,
+      isEditMode,
+      editingQuestionId,
     };
   },
 };

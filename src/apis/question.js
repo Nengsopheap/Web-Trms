@@ -18,8 +18,9 @@ export async function createQuestion(questionData) {
 }
 
 export const updateQuestion = async (id, updatedData) => {
-  return await axios.post(`${BASE_URL}/questions/${id}`, updatedData);
+  return await axios.put(`${BASE_URL}/questions/${id}`, updatedData);
 };
+
 
 export async function deleteQuestion(id) {
   return await axios.delete(`${BASE_URL}/questions/${id}`);
