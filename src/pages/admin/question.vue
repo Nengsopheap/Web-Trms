@@ -45,7 +45,7 @@
           <h2 class="text-xl font-bold text-gray-800">
             {{
               isEditMode
-                ? $t("button.edit_question")
+                ? $t("title.update_question")
                 : $t("button.create_question")
             }}
           </h2>
@@ -218,7 +218,7 @@
           >
             {{
               isEditMode
-                ? $t("button.update_question")
+                ? $t("button.Save")
                 : $t("button.create_question")
             }}
           </button>
@@ -584,27 +584,44 @@ export default {
       isEditMode.value = true;
       editingQuestionId.value = question.id;
 
-      // Populate form with selected question data
+      const questionType =
+        question.type ||
+        (question.is_yes_no
+          ? "yes_no"
+          : question.is_multiple_choice
+          ? "multiple_choice"
+          : "single_choice");
+
+      let options = question.options.map((opt) => ({
+        option_text: opt.option_text,
+        is_correct: opt.is_correct,
+        id: opt.id,
+      }));
+
+      // Handle yes_no to always have Yes/No labels
+      if (questionType === "yes_no") {
+        const yesCorrect = options.find(
+          (o) => o.option_text === "Yes"
+        )?.is_correct;
+        const noCorrect = options.find(
+          (o) => o.option_text === "No"
+        )?.is_correct;
+
+        options = [
+          { option_text: "Yes", is_correct: !!yesCorrect },
+          { option_text: "No", is_correct: !!noCorrect },
+        ];
+      }
+
       newQuestion.value = {
         question_text: question.question_text || "",
         assessment_id: question.assessment?.id || null,
         points: question.points || 1,
         category: question.category || "easy",
-        type:
-          question.type ||
-          (question.is_yes_no
-            ? "yes_no"
-            : question.is_multiple_choice
-            ? "multiple_choice"
-            : "single_choice"),
-        options: question.options
-          ? question.options.map((opt) => ({
-              option_text: opt.option_text,
-              is_correct: opt.is_correct,
-              id: opt.id, // keep id to know existing option if needed (optional)
-            }))
-          : [{ option_text: "", is_correct: false }],
+        type: questionType,
+        options,
       };
+
       showModal.value = true;
     };
 
@@ -668,6 +685,8 @@ export default {
     watch(
       () => newQuestion.value.type,
       (type) => {
+        if (isEditMode.value) return; // ✅ Don't reset if in edit mode
+
         if (type === "yes_no") {
           newQuestion.value.options = [
             { option_text: "Yes", is_correct: false },

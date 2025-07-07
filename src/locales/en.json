@@ -43,7 +43,14 @@
     "history_user": "User History",
     "knowledge": "Test your knowledge about best practices.",
     "Best  Tips to Stay Safe Online.": "Best  Tips to Stay Safe Online.",
-    "user": "user"
+    "user": "user",
+    "user_management": "User Management",
+    "create_user": "+ Create User",
+    "email": "Email",
+    "role": "Role",
+    "password": "Password",
+    "update_user": "Update User",
+    "update_question": "Update Question"
   },
 
   "button": {
@@ -53,7 +60,13 @@
     "Submit": "Submit",
     "create_assessment": "+ Add New",
     "Page": "Page",
-    "search": "Search......"
+    "search": "Search......",
+    "save_failed": "Save failed",
+    "update_success": "Update successful",
+    "delete_success": "Delete successful",
+    "delete_failed": "Delete failed",
+    "Create_successful": "created successfully",
+    "Save": "Save"
   },
 
   "validation": {

@@ -1,140 +1,67 @@
 <template>
   <div class="p-3">
-    <h1 class="text-2xl font-bold font-kantumruy">{{ $t("title.Users") }}</h1>
-
-    <!-- Create Button -->
-    <div class="flex justify-end mb-3">
+    <h2 class="text-2xl font-bold font-kantumruy">
+      {{ $t("title.user_management") }}
+    </h2>
+    <div class="flex justify-end items-end">
       <button
-        @click="openModal('create')"
-        class="bg-[#111827] text-white px-4 py-2 rounded font-kantumruy"
+        class="bg-[#111827] p-2 rounded-md text-white mb-3 font-kantumruy"
+        @click="openModal()"
       >
-        {{ $t("button.create_user") }}
+        {{ $t("title.create_user") }}
       </button>
     </div>
 
-    <!-- Modal -->
-    <div
-      v-if="showModal"
-      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-    >
-      <div class="bg-white p-6 rounded shadow-lg w-full max-w-md">
-        <h2 class="text-xl font-semibold mb-4">
-          {{
-            modalMode === "preview"
-              ? $t("title.UserPreview")
-              : modalMode === "edit"
-              ? $t("button.edit_user")
-              : $t("button.create_user")
-          }}
-        </h2>
-
-        <form @submit.prevent="handleSubmit">
-          <input
-            v-model="form.email"
-            type="email"
-            placeholder="Email"
-            class="border p-2 mb-3 w-full rounded"
-            :readonly="modalMode === 'preview'"
-            required
-          />
-          <!-- <input
-            v-model="form.password"
-            type="password"
-            placeholder="Password"
-            class="border p-2 mb-3 w-full rounded"
-            :required="modalMode === 'create'"
-            :readonly="modalMode === 'preview'"
-          /> -->
-          <input
-            v-model="form.username"
-            type="text"
-            placeholder="Username"
-            class="border p-2 mb-3 w-full rounded"
-            :readonly="modalMode === 'preview'"
-          />
-          <select
-            v-model="form.role"
-            class="border p-2 mb-3 w-full rounded"
-            :disabled="modalMode === 'preview'"
-          >
-            <option value="USER">USER</option>
-            <option value="ADMIN">ADMIN</option>
-          </select>
-
-          <div class="flex justify-end">
-            <button
-              type="button"
-              @click="closeModal"
-              class="px-4 py-2 border rounded mr-2"
-            >
-              {{ $t("button.Cancel") }}
-            </button>
-            <button
-              v-if="modalMode !== 'preview'"
-              type="submit"
-              class="px-5 py-2 rounded bg-[#111827] text-white hover:bg-gray-900"
-            >
-              {{
-                modalMode === "edit"
-                  ? $t("button.Update")
-                  : $t("button.create_user")
-              }}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Loading/Error -->
-    <div v-if="userStore.loading" class="mt-4">Loading users...</div>
-    <div v-if="userStore.error" class="mt-2 text-red-600">
-      {{ userStore.error }}
-    </div>
-
-    <!-- Users Table -->
-    <div v-if="userStore.users.length" class="w-full mx-auto mt-4">
+    <!-- User Table -->
+    <div class="w-full mx-auto">
       <div
         class="bg-white p-6 rounded-lg shadow-[0_4px_12px_rgba(76,56,187,0.25)] overflow-x-auto"
       >
         <table class="min-w-full divide-y divide-gray-200">
           <thead class="bg-[#111827] text-white">
             <tr>
-              <th class="px-4 py-2 text-left text-sm font-medium">#</th>
-              <th class="px-4 py-2 text-left text-sm font-medium">Email</th>
-              <th class="px-4 py-2 text-left text-sm font-medium">Username</th>
-              <th class="px-4 py-2 text-left text-sm font-medium">Role</th>
-              <th class="px-4 py-2 text-right text-sm font-medium">Actions</th>
+              <!-- <th class="px-4 py-2 text-left text-sm font-medium">#</th> -->
+              <th class="px-4 py-2 text-left text-sm font-medium">
+                {{ $t("title.email") }}
+              </th>
+              <th class="px-4 py-2 text-left text-sm font-medium">
+                {{ $t("title.username") }}
+              </th>
+              <th class="px-4 py-2 text-left text-sm font-medium">
+                {{ $t("title.role") }}
+              </th>
+              <th class="px-4 py-2 text-end text-sm font-medium">
+                {{ $t("title.Actions") }}
+              </th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100">
-            <tr
-              v-for="(user, index) in userStore.users"
-              :key="user.id"
-              class="hover:bg-gray-50"
-            >
-              <td class="px-4 py-2 text-sm text-gray-700">{{ index + 1 }}</td>
-              <td class="px-4 py-2 text-sm text-gray-600">{{ user.email }}</td>
-              <td class="px-4 py-2 text-sm text-gray-600">
+            <tr v-for="user in users" :key="user.id" class="hover:bg-gray-50">
+              <!-- <td class="px-4 py-2 text-sm font-semibold text-gray-600">{{ user.id }}</td> -->
+              <td class="px-4 py-2 text-sm font-semibold text-gray-600">
                 {{ user.username }}
               </td>
-              <td class="px-4 py-2 text-sm text-gray-600">{{ user.role }}</td>
-              <td class="px-4 py-2 text-right space-x-2">
+              <td class="px-4 py-2 text-sm font-semibold text-gray-600">
+                {{ user.email }}
+              </td>
+              <td class="px-4 py-2 text-sm font-semibold text-gray-600">
+                {{ user.role }}
+              </td>
+              <td class="px-4 py-2 text-right">
                 <button
-                  @click="openModal('preview', user)"
-                  class="text-blue-600 hover:text-blue-800"
-                  title="Preview"
+                  @click="openModal(user)"
+                  class="text-blue-600 hover:text-blue-800 mr-2"
                 >
-                  <Icon icon="mdi:eye" class="w-5 h-5" />
+                  <SquarePen width="19" height="19" />
                 </button>
+                <!-- <button
+            class="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded text-sm"
+            @click="deleteUser(user.id)"
+          >
+            Delete
+          </button> -->
                 <button
-                  @click="openModal('edit', user)"
-                  class="text-green-600 hover:text-green-800"
-                  title="Edit"
-                >
-                  <Icon icon="mdi:pencil" class="w-5 h-5" />
-                </button>
-                <button
-                  @click="removeUser(user.id)"
+                  @click="deleteUser(user.id)"
                   class="text-red-600 hover:text-red-800"
                   title="Delete"
                 >
@@ -146,105 +73,215 @@
         </table>
       </div>
     </div>
+
+    <!-- Modal Backdrop -->
+    <div
+      v-if="showModal"
+      class="fixed inset-0 bg-black bg-opacity-50 z-40"
+      @click.self="closeModal"
+    ></div>
+
+    <!-- Modal -->
+    <div
+      v-if="showModal"
+      class="fixed inset-0 flex items-center justify-center z-50 px-4"
+    >
+      <div
+        class="bg-white rounded-lg shadow-lg max-w-md w-full overflow-hidden"
+      >
+        <form @submit.prevent="saveUser" class="flex flex-col">
+          <div class="flex justify-between items-center px-6 py-4 border-b">
+            <h5 class="text-lg font-semibold">
+              {{ form.id ? $t("title.update_user") : $t("title.create_user") }}
+            </h5>
+            <button
+              type="button"
+              class="text-gray-600 hover:text-gray-900 focus:outline-none"
+              @click="closeModal"
+              aria-label="Close modal"
+            >
+              ✕
+            </button>
+          </div>
+
+          <div class="p-6 space-y-4">
+            <div>
+              <label class="block mb-1 font-medium">{{
+                $t("title.email")
+              }}</label>
+              <input
+                v-model="form.email"
+                type="email"
+                required
+                class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <div>
+              <label class="block mb-1 font-medium">{{
+                $t("title.username")
+              }}</label>
+              <input
+                v-model="form.username"
+                type="text"
+                class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <div>
+              <label class="block mb-1 font-medium">{{
+                $t("title.password")
+              }}</label>
+              <input
+                v-model="form.password"
+                type="password"
+                :required="!form.id"
+                class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                autocomplete="new-password"
+              />
+            </div>
+
+            <div>
+              <label class="block mb-1 font-medium">{{
+                $t("title.role")
+              }}</label>
+              <select
+                v-model="form.role"
+                required
+                class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="admin">Admin</option>
+                <option value="user">User</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="flex justify-end px-6 py-4 border-t space-x-2">
+              <button
+              type="button"
+              @click="closeModal"
+              class="px-4 py-2 border rounded mr-2"
+            >
+              {{ $t("button.Cancel") }}
+            </button>
+            <button
+              type="submit"
+              class="px-5 py-2 rounded bg-[#111827] text-white hover:bg-gray-900"
+            >
+              {{$t("button.Save")}}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from "vue";
-import { useUserStore } from "../../stores/user";
+import { ref, onMounted } from "vue";
+import axios from "axios";
+import { SquarePen } from "lucide-vue-next";
 import { Icon } from "@iconify/vue";
 import { useI18n } from "vue-i18n";
-import { toast } from "vue3-toastify"; // import toast directly
-import "vue3-toastify/dist/index.css"; // make sure CSS is imported once globally
+import { toast } from "vue3-toastify";
 
-const userStore = useUserStore();
+// const toast = useToast();
+
 const { t } = useI18n();
-
+const users = ref([]);
 const showModal = ref(false);
-const modalMode = ref("create"); // 'create' | 'edit' | 'preview'
-const editingId = ref(null);
 
-const form = reactive({
+// Important: Use a fresh object to replace `form`
+// to ensure reactivity and inputs reset properly.
+const form = ref({
+  id: null,
   email: "",
-  password: "",
   username: "",
-  role: "USER",
+  password: "",
+  role: "user",
 });
 
-function openModal(mode, user = null) {
-  modalMode.value = mode;
-  showModal.value = true;
-
-  if (user) {
-    editingId.value = user.id;
-    form.email = user.email;
-    form.username = user.username;
-    form.role = user.role;
-    form.password = "";
-  } else {
-    resetForm();
-  }
-}
-
-function resetForm() {
-  form.email = "";
-  form.password = "";
-  form.username = "";
-  form.role = "USER";
-  editingId.value = null;
-}
-
-function closeModal() {
-  showModal.value = false;
-  resetForm();
-}
-
-async function handleSubmit() {
+const fetchUsers = async () => {
   try {
-    if (modalMode.value === "edit" && editingId.value) {
-      await userStore.updateUser(editingId.value, { ...form });
-      toast.success(t("toast.update_success"), {
-        autoClose: 3000,
+    const res = await axios.get("http://localhost:3000/users/all");
+    users.value = res.data;
+  } catch (error) {
+    console.error("Failed to fetch users:", error);
+  }
+};
+
+const openModal = (user = null) => {
+  if (user) {
+    // Replace the entire form object — Vue tracks reactivity better this way.
+    form.value = {
+      id: user.id,
+      email: user.email,
+      username: user.username,
+      password: "",
+      role: user.role,
+    };
+  } else {
+    form.value = {
+      id: null,
+      email: "",
+      username: "",
+      password: "",
+      role: "user",
+    };
+  }
+  showModal.value = true;
+};
+
+const closeModal = () => {
+  showModal.value = false;
+};
+
+const saveUser = async () => {
+  try {
+    if (form.value.id) {
+      await axios.put(
+        `http://localhost:3000/users/${form.value.id}`,
+        form.value
+      );
+      toast.success(t("button.update_success"), {
+        autoClose: 2000,
         position: "top-right",
       });
     } else {
-      await userStore.addUser({ ...form });
-      toast.success(t("toast.create_success"), {
-        autoClose: 3000,
+      await axios.post("http://localhost:3000/users/create", form.value);
+      toast.success(t("button.Create_successful"), {
+        autoClose: 2000,
         position: "top-right",
       });
     }
     closeModal();
-  } catch (err) {
-    toast.error(t("toast.action_failed"), {
+    fetchUsers();
+  } catch (error) {
+    toast.error(t("button.save_failed"), {
       autoClose: 3000,
       position: "top-right",
     });
   }
-}
+};
 
-async function removeUser(id) {
+const deleteUser = async (id) => {
   try {
-    await userStore.removeUser(id);
-    toast.success(t("toast.delete_success"), {
-      autoClose: 3000,
+    await axios.delete(`http://localhost:3000/users/${id}`);
+    toast.success(t("button.delete_success"), {
+      autoClose: 2000,
       position: "top-right",
     });
-  } catch (err) {
-    toast.error(t("toast.action_failed"), {
+
+    fetchUsers();
+  } catch (error) {
+    toast.error(t("button.delete_failed"), {
       autoClose: 3000,
       position: "top-right",
     });
   }
-}
+};
 
 onMounted(() => {
-  userStore.loadUsers();
+  fetchUsers();
 });
 </script>
-
-<style scoped>
-.font-kantumruy {
-  font-family: "Kantumruy", sans-serif;
-}
-</style>
